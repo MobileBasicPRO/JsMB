@@ -1,0 +1,43 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "node": false
+    },
+    "rules": {
+        "strict": [2, "global"],
+        "no-const-assign": "warn",
+        "no-this-before-super": "warn",
+        "no-undef": "warn",
+        "no-unreachable": "warn",
+        "no-unused-vars": "warn",
+        "constructor-super": "warn",
+        "valid-typeof": "warn",
+        "no-console": "off",
+        "new-cap": "warn",
+        "no-use-before-define": [2, {
+            "functions": false,
+            "classes": true
+        }],
+        "no-param-reassign": "error",
+        "wrap-iife": [2, "inside"],
+        "no-return-assign":"warn",
+        "no-underscore-dangle":"off",
+        "consistent-return":"warn"
+    },
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "script",
+        "ecmaFeatures": {
+            "modules": false,
+            "defaultParams": true,
+            "classes": true,
+            "arrowFunctions": true,
+            "blockBindings": true,
+            "forOf": true,
+            "spread": true,
+            "templateStrings": true
+        }
+    }
+}
