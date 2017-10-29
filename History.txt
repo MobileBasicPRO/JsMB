@@ -1,0 +1,100 @@
+История изменений (с 4-й альфы):
+Alpha4{
+	Исправлен setColor(color)
+	Исправлен include(module)
+	Добавлено:
+		getModuleName(id)
+		getModuleAuthor(id)
+		getModuleDescription(id)
+		getModuleUrl(id)
+	Добавлены логические ответы во все операторы
+	Другие мелкие исправления
+}
+Alpha5{
+    Добавлено:
+        getModuleVersion(id),
+        drawPlot(x,y),
+        drawArc(x,y,radius),
+        fillArc(x,y,radius),
+        setLineWidth(width),
+        cls(),
+        fillScreen(color),
+        ctg(angle),
+        actg(angle),
+        makeLinearGragient(x,y,x1,y1),
+        makeRadialGradient(x,y,r,x1,y1,r1)
+    Исправлено большинство багов
+    Другие мелкие исправления
+}
+Alpha6{
+	Глобальные обновления:
+		Обработчик onKeyPress
+		Режим отладки
+		Конфиг в html файле
+		
+	Добавлено:
+		menuAdd(name, title, onClick, type, fortype)
+		menuAddSeparator(name)
+		menuShow(name, x, y)
+		menuBarAdd(name, title, subMenu)
+		menuBarShow(name)
+		getClipboard(type)
+		setClipboard(value, type)
+		clearClipboard()
+		menuTrayAdd(name, title, icon, menu)
+		saveData(filename, data, ifOk)
+		setGradientColor(g,num,color)
+		log(text)
+		debug(text, style)
+		drawTriangle(x1,y1,x2,y2,x3,y3)
+		fillTriangle(x1,y1,x2,y2,x3,y3)
+		drawRect4(x1,y1,x2,y2,x3,y3,x4,y4)
+		fillrect4(x1,y1,x2,y2,x3,y3,x4,y4)
+		
+	Исправлено:
+		setFont, setFontSize
+		Мелкие баги
+}
+Alpha7{
+	Глобальные изменения:
+		Оптимизирован главный цикл, перерь он не нагружает систему и может достигать до 120-и повторений в секунду
+	
+	Добавлено:
+		println(text)
+	
+	Исправлено:
+		setFont теперь работает
+		setFontSize теперь работает
+		gelLoad оптимизирован
+		drawGel оптимизирован
+		debug исправлен
+		Исправлены и оптимизированы "древние баги"
+		Другие мелкие исправления
+}
+Alpha8{
+	Глобальные изменения:
+		Изменено поведение хука onKeyPress
+		Добавлены хуки: onKeyDown, onKeyUp
+		Возможность включения мобильной версии в конфиге
+		Изменено поведение screenWidth(0) и screenHeight(0)
+	Добавлено:
+		limit(value, min, max)
+		min(val1,val2,valN)
+		max(val1,val2,valN)
+		len(str)
+		str(num)
+		val(str)
+		upper(str)
+		lower(str)
+		mid(str,pos,len)
+		chr(code)
+		asc(char)
+		deg(rad)
+		rad(deg)
+		gelSize(name, width, height)
+		drawGelFragment(name,fx,fy,fw,fh,x,y,w,h)
+		makeTexture(gelname, repetion)
+	Совместимость:
+		Android Library
+		Raycasting Library
+}
