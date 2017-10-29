@@ -11,7 +11,7 @@
 
 var $JsMobileBasic = {
     name: 'JsMobileBasic',
-    version: 'Alpha 10',
+    version: 'Alpha 11',
     author: 'PROPHESSOR',
     url: 'http://vk.com/JsMobileBasic',
     Mobile: $Config.Mobile,
@@ -20,84 +20,10 @@ var $JsMobileBasic = {
     graphic: false
 }
 
-let $NW, $File, $OS, $Path, $Proc;
-
-const $Init = {
-    _Support: function () {
-        if ($JsMobileBasic.Mobile) {
-            debug('Не поддерживаеться в мобильной версии!');
-            return false;
-        }
-        if (typeof require !== "function") {
-            debug('Не поддерживаеться на вашей платформе!');
-            return false;
-        }
-        return true;
-    },
-    _Double: function (name) {
-        debug('Модуль ' + name + ' уже инициализирован!', 'background:black;color:#00ff00;');
-    },
-    File: [function () {
-        if ($Init._Support) {
-            if (!$Init.File[1]) {
-                $File = require('fs');
-                $Init.File[1] = true;
-            } else {
-                $Init._Double('File')
-            }
-        } else {
-            $Init.File[2] = true;
-        }
-    }, false, false],
-    OS: [function () {
-        if ($Init._Support) {
-            if (!$Init.OS[1]) {
-                $OS = require('os');
-                $Init.OS[1] = true;
-            } else {
-                $Init._Double('OS')
-            }
-        } else {
-            $Init.OS[2] = true;
-        }
-    }, false, false],
-    NW: [function () {
-        if ($Init._Support) {
-            if (!$Init.NW[1]) {
-                $NW = require('nw.gui');
-                $Init.NW[1] = true;
-            } else {
-                $Init._Double('GUI')
-            }
-        } else {
-            $Init.NW[2] = true;
-        }
-    }, false, false],
-    Path: [function () {
-        if ($Init._Support) {
-            if (!$Init.Path[1]) {
-                $Path = require('path');
-                $Init.Path[1] = true;
-            } else {
-                $Init._Double('Path')
-            }
-        } else {
-            $Init.Path[2] = true;
-        }
-    }, false, false],
-    Proc: [function () {
-        if ($Init._Support) {
-            if (!$Init.Proc[1]) {
-                $Proc = require('child_process');
-                $Init.Proc[1] = true;
-            } else {
-                $Init._Double('Proc')
-            }
-        } else {
-            $Init.Proc[2] = true;
-        }
-    }, false, false]
-}
+let $NW, $Path, $Proc;
+if (typeof require === "function" && require("nw.gui")) {
+    $NW = require("nw.gui");
+} else $NW = null;
 
 if (!$JsMobileBasic.Mobile) debug('#===== Включён режим отладки =====#', 'color:gray;');
 if (!$JsMobileBasic.Mobile) debug($JsMobileBasic.name, 'background:gray;color:yellow;');
@@ -594,43 +520,6 @@ function float(str) {
 }
 var int = val; //int()=parseInt()=val()
 
-//Работа с файлами
-
-
-
-function saveData(filename, _data, callback) {
-    $Init.File[0]();
-    $Init.NW[0]();
-    $Init.Path[0]();
-
-    var file = filename + '.json';
-    var filePath = $Path.join($NW.App.dataPath, file);
-    const data = toJSON(_data);
-
-    $File.writeFile(filePath, data, function (err) {
-        if (err) {
-            alert('Ошибка при сохранении: ' + err.message);
-            return false;
-        } else if (callback) {
-            callback();
-        }
-    });
-
-    window.localStorage.setItem(name, data);
-}
-
-function readData(filename) {
-    $Init.File[0]();
-    $Init.NW[0]();
-    $Init.Path[0]();
-
-    var file = filename + '.json';
-    var filePath = $Path.join($NW.App.dataPath, file);
-    var data = $File.readFileSync(filePath, 'utf8');
-    var json = parseJSON(data);
-    return json;
-}
-
 //Работа с локальными данными
 
 function localSaveData(name, _data) {
@@ -1039,7 +928,7 @@ onload = function () {
 
         function $Loop() {
             window.requestAnimationFrame($Loop);
-            if (typeof (Loop) === "function") Loop();//eslint-disable-line
+            if (typeof (Loop) === "function") Loop(); //eslint-disable-line
             else throw new Error("В файле Autorun.bas должен быть хук Loop()!");
         }
         $Loop();
