@@ -3,7 +3,6 @@
         "as_desktop": false,
         "transparent": false,
         "exe_icon": "icon.png",
-        "height": 480,
         "mac_icon": "icon.png",
         "fullscreen": false,
         "kiosk_emulation": false,
@@ -12,6 +11,7 @@
         "show_in_taskbar": true,
         "show": true,
         "width": 640,
+        "height": 480,
         "title": "JsMobileBasic Interpreter",
         "always_on_top": false,
         "visible": true,
@@ -30,10 +30,10 @@
     "description": "JsMobileBasic Interpreter (http://vk.com/JsMobileBasic/)",
     "single-instance": true,
     "app_name": "JsMB",
-    "name": "JsMB Interpreter",
+    "name": "interpreter",
     "nodejs": true,
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "run":"jsmb ."
     },
     "icon": "icon.png",
     "license": "ISC",
