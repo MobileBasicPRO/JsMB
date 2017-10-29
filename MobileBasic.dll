@@ -3,7 +3,9 @@
  * Интерпретатор языка JsMobileBasic
  * ~~~~~~~~~~by PROPHESSOR~~~~~~~~~~
  * ================================//
-*/
+ */
+
+/* global $Config */
 
 'use strict';
 
@@ -18,7 +20,7 @@ var $JsMobileBasic = {
     graphic: false
 }
 
-let $NW, $Files, $OS, $Path, $Proc;
+let $NW, $File, $OS, $Path, $Proc;
 
 const $Init = {
     _Support: function () {
@@ -32,66 +34,66 @@ const $Init = {
         }
         return true;
     },
-    _Double: function(name){
-        debug('Модуль '+name+' уже инициализирован!', 'background:black;color:#00ff00;');
+    _Double: function (name) {
+        debug('Модуль ' + name + ' уже инициализирован!', 'background:black;color:#00ff00;');
     },
     File: [function () {
         if ($Init._Support) {
             if (!$Init.File[1]) {
-                    $File = require('fs');
-                    $Init.File[1] = true;
+                $File = require('fs');
+                $Init.File[1] = true;
             } else {
                 $Init._Double('File')
             }
-        }else{
+        } else {
             $Init.File[2] = true;
         }
     }, false, false],
     OS: [function () {
         if ($Init._Support) {
             if (!$Init.OS[1]) {
-                    $OS = require('os');
-                    $Init.OS[1] = true;
+                $OS = require('os');
+                $Init.OS[1] = true;
             } else {
                 $Init._Double('OS')
             }
-        }else{
+        } else {
             $Init.OS[2] = true;
         }
     }, false, false],
     NW: [function () {
-       if ($Init._Support) {
+        if ($Init._Support) {
             if (!$Init.NW[1]) {
-                    $NW = require('nw.gui');
-                    $Init.NW[1] = true;
+                $NW = require('nw.gui');
+                $Init.NW[1] = true;
             } else {
                 $Init._Double('GUI')
             }
-        }else{
+        } else {
             $Init.NW[2] = true;
         }
     }, false, false],
     Path: [function () {
         if ($Init._Support) {
             if (!$Init.Path[1]) {
-                    $Path = require('path');
-                    $Init.Path[1] = true;
+                $Path = require('path');
+                $Init.Path[1] = true;
             } else {
                 $Init._Double('Path')
             }
-        }else{
+        } else {
             $Init.Path[2] = true;
         }
     }, false, false],
     Proc: [function () {
         if ($Init._Support) {
             if (!$Init.Proc[1]) {
-                    $Proc = require('child_process');
-                    $Init.Proc[1] = true;
+                $Proc = require('child_process');
+                $Init.Proc[1] = true;
             } else {
                 $Init._Double('Proc')
             }
-        }else{
+        } else {
             $Init.Proc[2] = true;
         }
     }, false, false]
@@ -114,7 +116,7 @@ if ($Config.fullscreen) fullScreen(1);
 
 if ($Config.type == 'graphic') {
     $JsMobileBasic.graphic = true;
-    if(!$JsMobileBasic.Mobile) debug('Используется графика!', 'background:black;color:yellow;');
+    if (!$JsMobileBasic.Mobile) debug('Используется графика!', 'background:black;color:yellow;');
 
     $JsMobileBasic.$style = document.createElement('style');
     $JsMobileBasic.$style.innerHTML = 'html{overflow: hidden;} body{margin:0;padding:0;}';
@@ -124,8 +126,10 @@ if ($Config.type == 'graphic') {
     //    $JsMobileBasic.canvas = c;
     var ctx = c.getContext("2d");
     if ($Config.canvas_size[0] == '*' && $Config.canvas_size[1] == '*') {
-        if(!$JsMobileBasic.Mobile) debug('Canvas растянут на весь экран', 'background:black;color:#00ff00;');
-        if (!$JsMobileBasic.Mobile) { $Config.canvas_size[2] ? debug('Вмещение включено') : debug('Вмещение выключено'); }
+        if (!$JsMobileBasic.Mobile) debug('Canvas растянут на весь экран', 'background:black;color:#00ff00;');
+        if (!$JsMobileBasic.Mobile) {
+            $Config.canvas_size[2] ? debug('Вмещение включено') : debug('Вмещение выключено');
+        }
         c.height = window.innerHeight;
         c.width = window.innerWidth;
         if ($Config.canvas_size[2]) {
@@ -147,7 +151,7 @@ document.getElementsByTagName('title')[0].innerHTML = $Config.name;
 if (!$JsMobileBasic.Mobile) debug('Имя проекта: ' + $Config.name, 'background:brown;color:yellow;');
 
 var $Player = [document.getElementById("player0")];
-// ======Инициализация интерпретатора======//
+
 if (!$JsMobileBasic.Mobile) debug('// ======Инициализация интерпретатора======//', 'color:gray;');
 
 
@@ -184,19 +188,23 @@ function setColor(color) {
     ctx.strokeStyle = color;
     return true;
 };
+
 function setLineWidth(width) {
     ctx.lineWidth = width;
     return true;
 }
+
 function fillRect(x, y, x1, y1) {
     ctx.fillRect(x, y, x1, y1);
     return true;
 }
+
 function cls() {
     clearRect(0, 0, screenWidth(), screenHeight());
     document.getElementById('p').innerHTML = '';
     return true;
 }
+
 function fillScreen(color) {
     ctx.save();
     setColor(color);
@@ -204,10 +212,12 @@ function fillScreen(color) {
     ctx.restore();
     return true;
 }
+
 function drawRect(x, y, x1, y1) {
     ctx.strokeRect(x, y, x1, y1);
     return true;
 }
+
 function drawPlot(x, y) {
     ctx.save();
     setLineWidth(1);
@@ -215,10 +225,12 @@ function drawPlot(x, y) {
     ctx.restore()
     return true;
 }
+
 function clearRect(x, y, x1, y1) {
     ctx.clearRect(x, y, x1, y1);
     return true;
 }
+
 function drawLine(x, y, x1, y1) {
     ctx.beginPath();
     ctx.moveTo(x, y);
@@ -226,6 +238,7 @@ function drawLine(x, y, x1, y1) {
     ctx.stroke();
     return true;
 }
+
 function drawCube(x, y, x1, y1, q) {
     ctx.strokeRect(x, y, x1, y1);
     ctx.strokeRect(x + (q / Math.sqrt(2)), y + (q / Math.sqrt(2)), x1, y1);
@@ -235,29 +248,34 @@ function drawCube(x, y, x1, y1, q) {
     drawLine(x + x1, y + y1, x + x1 + (q / Math.sqrt(2)), y + y1 + (q / Math.sqrt(2)));
     return true;
 }
-function drawArc(x, y, radius, startAngle, endAngle, counterClockwise) {
-    if (startAngle == undefined) { startAngle = 15 * Math.PI / 7; }
 
-    if (endAngle == undefined) { endAngle = 13 * Math.PI / 2; }
-    if (counterClockwise == undefined) { counterClockwise = false; }//направление дуги. По умолчанию false
-
+function drawArc(x, y, radius,
+    startAngle = (15 * Math.PI / 7),
+    endAngle = (13 * Math.PI / 2),
+    counterClockwise = false) {
     ctx.beginPath();
     ctx.arc(x, y, radius, startAngle, endAngle, counterClockwise);
     ctx.stroke();
     return true;
 }
-function fillArc(x, y, radius, startAngle, endAngle, counterClockwise) {
-    if (startAngle == undefined) { startAngle = 15 * Math.PI / 7; }
-    if (endAngle == undefined) { endAngle = 13 * Math.PI / 2; }
-    if (counterClockwise == undefined) { counterClockwise = false; }
 
+function fillArc(x, y, radius,
+    startAngle = (15 * Math.PI / 7),
+    endAngle = (13 * Math.PI / 2),
+    counterClockwise = false) {
     ctx.beginPath();
     ctx.arc(x, y, radius, startAngle, endAngle, counterClockwise);
     ctx.fill();
     return true;
 }
+
 function fillRect4(x, y, x1, y1, x2, y2, x3, y3) {
-    var arr = [[x, y], [x1, y1], [x2, y2], [x3, y3]];
+    var arr = [
+        [x, y],
+        [x1, y1],
+        [x2, y2],
+        [x3, y3]
+    ];
     ctx.beginPath();
     for (var i = 0; i < arr.length; i++) {
         if (i == 0) ctx.moveTo(arr[i][0], arr[i][1]);
@@ -266,8 +284,14 @@ function fillRect4(x, y, x1, y1, x2, y2, x3, y3) {
     ctx.fill();
     return true;
 }
+
 function drawRect4(x, y, x1, y1, x2, y2, x3, y3) {
-    var arr = [[x, y], [x1, y1], [x2, y2], [x3, y3]];
+    var arr = [
+        [x, y],
+        [x1, y1],
+        [x2, y2],
+        [x3, y3]
+    ];
     ctx.beginPath();
     for (var i = 0; i < arr.length; i++) {
         if (i == 0) ctx.moveTo(arr[i][0], arr[i][1]);
@@ -276,8 +300,13 @@ function drawRect4(x, y, x1, y1, x2, y2, x3, y3) {
     ctx.stroke();
     return true;
 }
+
 function fillTriangle(x, y, x1, y1, x2, y2) {
-    var arr = [[x, y], [x1, y1], [x2, y2]];
+    var arr = [
+        [x, y],
+        [x1, y1],
+        [x2, y2]
+    ];
     ctx.beginPath();
     for (var i = 0; i < arr.length; i++) {
         if (i == 0) ctx.moveTo(arr[i][0], arr[i][1]);
@@ -286,8 +315,13 @@ function fillTriangle(x, y, x1, y1, x2, y2) {
     ctx.fill();
     return true;
 }
+
 function drawTriangle(x, y, x1, y1, x2, y2) {
-    var arr = [[x, y], [x1, y1], [x2, y2]];
+    var arr = [
+        [x, y],
+        [x1, y1],
+        [x2, y2]
+    ];
     ctx.beginPath();
     for (var i = 0; i < arr.length; i++) {
         if (i == 0) ctx.moveTo(arr[i][0], arr[i][1]);
@@ -296,15 +330,18 @@ function drawTriangle(x, y, x1, y1, x2, y2) {
     ctx.stroke();
     return true;
 }
+
 function drawString(text, x, y) {
     ctx.fillText(text, x, y);
     return true;
 };
+
 function setFontSize(size) {
     ctx.font = size + "px " + $Font.family;
     $Font.size = size;
     return true;
 }
+
 function setFont(family) {
     ctx.font = $Font.size + "px " + family;
     $Font.family = family;
@@ -314,9 +351,11 @@ function setFont(family) {
 function makeLinearGradient(x, y, x1, y1) {
     return ctx.createLinearGradient(x, y, x1, y1);
 }
+
 function makeRadialGradient(x, y, r, x1, y1, r1) {
     return ctx.createRadialGradient(x, y, r, x1, y1, r1);
 }
+
 function setGradientColor(g, num, color) {
     g.addColorStop(num, color);
     return true;
@@ -324,12 +363,12 @@ function setGradientColor(g, num, color) {
 
 //Конвертеры
 
-function rgb(red=0,green=0,blue=0){
-    return "rgb("+red+","+green+","+blue+")";
+function rgb(red = 0, green = 0, blue = 0) {
+    return "rgb(" + red + "," + green + "," + blue + ")";
 }
 
-function rgba(red=0,green=0,blue=0,alpha=0){
-    return "rgba("+red+","+green+","+blue+","+alpha+")";
+function rgba(red = 0, green = 0, blue = 0, alpha = 0) {
+    return "rgba(" + red + "," + green + "," + blue + "," + alpha + ")";
 }
 
 //Гели/спрайты
@@ -339,6 +378,7 @@ function gelLoad(file, name) {
     $Gel[name].src = file;
     return true;
 }
+
 function spriteGel(file, name) {
     // $Gel.$Sprite[name] = new Sprite();
     // $Gel.$Sprite[name].src = file;
@@ -347,6 +387,7 @@ function spriteGel(file, name) {
     //    var c = new Sprite();
 
 }
+
 function drawGel(name, x, y) {
     if ($Gel[name].resize == true) {
         ctx.drawImage($Gel[name], x, y, $Gel[name].w, $Gel[name].h);
@@ -355,7 +396,8 @@ function drawGel(name, x, y) {
     }
     return true;
 }
-function drawSprite(name, x, y){
+
+function drawSprite(name, x, y) {
     // ctx.drawImage($Gel[name],x,y);
     return false;
 }
@@ -367,14 +409,12 @@ function gelSize(name, w, h) {
     return true;
 }
 
-function drawGelFragment(name, fx, fy, fw, fh, x, y, w, h) {
-    if (w == undefined || h == undefined) { w = fw; h = fh; }
+function drawGelFragment(name, fx, fy, fw, fh, x, y, w = fw, h = fh) { //TODO: Проверить
     ctx.drawImage($Gel[name], fx, fy, fw, fh, x, y, w, h);
     return true;
 }
 
-function makeTexture(gelname, repeat) { //repeat/no-repeat
-    if(repeat == undefined) repeat = 'repeat';
+function makeTexture(gelname, repeat = 'repeat') { //repeat/no-repeat
     return ctx.createPattern($Gel[gelname], repeat);
 }
 
@@ -398,10 +438,7 @@ function println(text) {
 
 //Звук
 
-function playSound(file, loop, channel) {
-    if (channel === undefined) {
-        channel = 0;
-    }
+function playSound(file, loop, channel = 0) {
     if ($Player[channel] === undefined) {
         var p = document.createElement('audio');
         p.id = "player" + channel;
@@ -418,10 +455,8 @@ function playSound(file, loop, channel) {
     }
     return true;
 }
-function pauseSound(channel) {
-    if (channel === undefined) {
-        channel = 0;
-    }
+
+function pauseSound(channel = 0) {
     if (channel == -1) {
         for (var i in $Player) {
             $Player[i].pause();
@@ -441,53 +476,61 @@ function pauseSound(channel) {
 function sqrt(x) {
     return Math.sqrt(x);
 }
+
 function random(a, b) {
     return Math.floor(Math.random() * b + a);
 }
+
 function sin(x) {
     return Math.sin(x);
 }
+
 function cos(x) {
     return Math.cos(x);
 }
+
 function tan(x) {
     return Math.tan(x);
 }
+
 function ctg(x) {
     return 1 / Math.tan(x);
 }
+
 function asin(x) {
     return Math.asin(x);
 }
+
 function acos(x) {
     return Math.acos(x);
 }
+
 function atan(x) {
     return Math.atan(x);
 }
+
 function mod(x, y) {
     return x % y;
 }
+
 function abs(x) {
     return Math.abs(x);
 }
+
 function pow(x, num) {
     return Math.pow(x, num);
 }
+
 function ln(x) {
     return Math.log(x);
 }
+
 function exp(x) {
     return Math.exp(x);
 }
+
 function limit(variable, a, b) {
-    if (variable < a) {
-        variable = a;
-    }
-    if (variable > b) {
-        variable = b;
-    }
-    return variable;
+    return variable < a ? a : b; //TODO: Test
 }
 var min = Math.min;
 var max = Math.max;
@@ -509,50 +552,60 @@ function deg(rad) {
 function len(str) {
     return str.length;
 }
+
 function str(num) {
     return num.toString;
 }
+
 function val(str) {
     return parseInt(str);
 }
+
 function upper(str) {
     return str.toUpperCase;
 }
+
 function lower(str) {
     return str.toLowerCase;
 }
+
 function mid(str, pos, len) {
     return str.substr(pos, len);
 }
+
 function chr(code) { //code to string
     return String.fromCharCode(code);
 }
+
 function asc(str) { //string to code
     return str.charCode;
 }
+
 function split(str, char) {
     return str.split(char);
 }
+
 function replace(str, reg, to) {
     str.replace(reg, to);
 }
+
 function float(str) {
     return parseFloat(str);
 }
-var int = val;//int()=parseInt()=val()
+var int = val; //int()=parseInt()=val()
 
 //Работа с файлами
 
 
 
-function saveData(filename, data, callback) {
+function saveData(filename, _data, callback) {
     $Init.File[0]();
     $Init.NW[0]();
     $Init.Path[0]();
 
     var file = filename + '.json';
     var filePath = $Path.join($NW.App.dataPath, file);
-    data = toJSON(data);
+    const data = toJSON(_data);
 
     $File.writeFile(filePath, data, function (err) {
         if (err) {
@@ -580,18 +633,16 @@ function readData(filename) {
 
 //Работа с локальными данными
 
-function localSaveData(name, data) {
-    if (typeof (data) == "object") {
-        data = toJSON(data);
-    }
+function localSaveData(name, _data) {
+    const data = typeof (_data) == "object" ? toJSON(_data) : _data;
     window.localStorage.setItem(name, data);
     return true;
 }
 
 function localReadData(name) {
-    try{
+    try {
         return parseJSON(window.localStorage.getItem(name));
-    }catch(e){
+    } catch (e) {
         return window.localStorage.getItem(name);
     }
 }
@@ -676,9 +727,15 @@ function menuBarAdd(name, title, subMenu) {
     $Init.NW[0]();
     if (!$Init.NW[2]) {
         if ($Menu.$Bar[name] == undefined) {
-            $Menu.$Bar[name] = new $NW.Menu({ type: 'menubar', title: title });
+            $Menu.$Bar[name] = new $NW.Menu({
+                type: 'menubar',
+                title: title
+            });
         }
-        $Menu.$Bar[name].append(new $NW.MenuItem({ label: title, submenu: $Menu[subMenu] }));
+        $Menu.$Bar[name].append(new $NW.MenuItem({
+            label: title,
+            submenu: $Menu[subMenu]
+        }));
         return true;
     } else {
         debug('Создание меню невозможно!');
@@ -699,11 +756,10 @@ function menuBarShow(name) {
 
 //clipboard
 
-function getClipboard(type) {
+function getClipboard(type = 'text') {
     $Init.NW[0]();
     if (!$Init.NW[2]) {
         var clipboard = $NW.Clipboard.get();
-        if(type == undefined) type = 'text';
         return clipboard.get(type);
     } else {
         debug('Работа с буфером обмена невозможна!');
@@ -711,11 +767,10 @@ function getClipboard(type) {
     }
 }
 
-function setClipboard(value, type) {
+function setClipboard(value, type = 'text') {
     $Init.NW[0]();
     if (!$Init.NW[2]) {
         var clipboard = $NW.Clipboard.get();
-        if(type == undefined) type = 'text';
         clipboard.set(value, type);
         return true;
     } else {
@@ -764,13 +819,9 @@ function exec(target) {
     return true;
 }
 
-function execFile(file, keys) {
+function execFile(file, keys = []) {
     $Init.Proc[0]();
     if (!$Init.Proc[2]) {
-        if (typeof (keys) != "object") {
-            console.warn("Второй аргумент функции execFile должен быть масивом!");
-            keys = [];
-        }
         var proc = $Proc.execFile(file, keys, (error, stdout, stderr) => {
             if (error) {
                 debug("Ошибка при работе с процессом: " + error);
@@ -795,15 +846,19 @@ function include(file) {
 function getModuleName(ID) {
     return ID.name;
 }
+
 function getModuleAuthor(ID) {
     return ID.author;
 }
+
 function getModuleDescription(ID) {
     return ID.description;
 }
+
 function getModuleUrl(ID) {
     return ID.url;
 }
+
 function getModuleVersion(ID) {
     return ID.version;
 }
@@ -817,6 +872,7 @@ function screenWidth() {
         return window.innerWidth;
     }
 }
+
 function screenHeight() {
     if ($JsMobileBasic.graphic) {
         return $JsMobileBasic.canvas.height;
@@ -824,15 +880,19 @@ function screenHeight() {
         return window.innerHeight;
     }
 }
+
 function getMouseX() {
     return $Mouse.x;
 }
+
 function getMouseY() {
     return $Mouse.y;
 }
+
 function getLeftClicksCount() {
     return $Mouse.lcount;
 }
+
 function getRightClicksCount() {
     return $Mouse.rcount;
 }
@@ -845,10 +905,9 @@ function log(text) {
     return true;
 }
 
-function debug(text, style) {
+function debug(text, style = 'background: black; color: red;') {
     if ($Config.Debug_Mode) {
         if (!$JsMobileBasic.Mobile) {
-            if(style === undefined) style = 'background: black; color: red;';
             console.log('%c ' + text, style);
             return true;
         } else {
@@ -891,6 +950,7 @@ function addInputForm(id, value, x, y) {
     //     e.style = "position: absolute; left:"+x+"px; top:"+y+"px;";
     return false;
 }
+
 function addInputPassForm(id, value, x, y) {
     // var e = document.createElement('input');
     // e.type = 'password';
@@ -900,6 +960,7 @@ function addInputPassForm(id, value, x, y) {
     //     e.style = "position: absolute; left:"+x+"px; top:"+y+"px;";
     return false;
 }
+
 function addInputRadioForm(id, value, x, y) {
     // var e = document.createElement('input');
     // e.type = 'radio';
@@ -915,6 +976,7 @@ function add(code) {
     document.getElementsByTagName("body")[0].appendChild(e);
     return true;
 }
+
 function addElement(name, type) {
     $Element[name] = document.createElement(type);
     document.getElementById('includeHTML').appendChild(name)
@@ -926,76 +988,59 @@ function _eventListeners() {
     c.addEventListener('mousemove', function (event) {
         $Mouse.x = event.offsetX;
         $Mouse.y = event.offsetY;
-        if (typeof (onMouseMove) !== "undefined") onMouseMove(event.pageX, event.pageY, event);
+        if (typeof (onMouseMove) !== "undefined") onMouseMove(event.pageX, event.pageY, event); //eslint-disable-line
     }, false);
     c.addEventListener('click', function (event) {
         $Mouse.lcount++;
-        //    onClick(event.offsetX, event.offsetY);
-        if (typeof (onClick) !== "undefined") onClick(event.pageX, event.pageY, event);
-        //    if($listener != undefined){
-        //        eval($listener.click + '=onClick;');
-        //    }
+        if (typeof (onClick) !== "undefined") onClick(event.pageX, event.pageY, event); //eslint-disable-line
     }, false);
     c.addEventListener('mousedown', function (event) {
-        if (typeof (onMouseDown) !== "undefined") onMouseDown(event.pageX, event.pageY, event);
-        //    if($listener != undefined){
-        //        eval($listener.mousedown + '=onMouseDown;');
-        //    }
+        if (typeof (onMouseDown) !== "undefined") onMouseDown(event.pageX, event.pageY, event); //eslint-disable-line
     }, false);
     c.addEventListener('mouseup', function (event) {
-        if (typeof (onMouseUp) !== "undefined") onMouseUp(event.pageX, event.pageY, event);
-        //    if($listener != undefined){
-        //        eval($listener.mouseup + '=onMouseUp;');
-        //    }
+        if (typeof (onMouseUp) !== "undefined") onMouseUp(event.pageX, event.pageY, event); //eslint-disable-line
     }, false);
     c.addEventListener('contextmenu', function (event) {
         $Mouse.rcount++;
-        if (typeof (onRightClick) !== "undefined") onRightClick(event.pageX, event.pageY, event);
-        //    if($listener != undefined){
-        //        eval($listener.rclick + '=onRightClick;');
-        //    }
+        if (typeof (onRightClick) !== "undefined") onRightClick(event.pageX, event.pageY, event); //eslint-disable-line
     }, false);
     window.addEventListener('keypress', function (event) {
-        if (typeof (onKeyPress) !== "undefined") onKeyPress(event.keyCode, event);
+        if (typeof (onKeyPress) !== "undefined") onKeyPress(event.keyCode, event); //eslint-disable-line
     }, false);
 
     window.addEventListener('keydown', function (event) {
-        if (typeof (onKeyDown) !== "undefined") onKeyDown(event.keyCode, event);
+        if (typeof (onKeyDown) !== "undefined") onKeyDown(event.keyCode, event); //eslint-disable-line
     }, false);
 
     window.addEventListener('keyup', function (event) {
-        if (typeof (onKeyUp) !== "undefined") onKeyUp(event.keyCode, event);
+        if (typeof (onKeyUp) !== "undefined") onKeyUp(event.keyCode, event); //eslint-disable-line
     }, false);
 }
 
 // ======Прочее======//
 //Блокировка контекстного меню при правом клике
 
-c.oncontextmenu = function () { return false; }
+c.oncontextmenu = function () {
+    return false;
+}
 
-if(!$JsMobileBasic.Mobile) debug('// ======Инициализация завершена======//', 'background:black;color: #00ff00;');
+if (!$JsMobileBasic.Mobile) debug('// ======Инициализация завершена======//', 'background:black;color: #00ff00;');
 
 onload = function () {
     _eventListeners();
-    try {
-        Main();
-    } catch (e) {
-        throw new Error("В файле Autorun.bas должен быть хук Main()!");
-    }
+    if (typeof (Main) === "function") Main(); //eslint-disable-line
+    else throw new Error("В файле Autorun.bas должен быть хук Main()!");
     if (typeof Loop == "function") {
         if (!window.requestAnimationFrame) {
             window.requestAnimationFrame = (window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame || window.oRequestAnimationFrame || function (fnc) {
                 return window.setTimeout(fnc, 1000 / 60);
             });
         }
+
         function $Loop() {
             window.requestAnimationFrame($Loop);
-            try {
-                Loop();
-            } catch (e) {
-                throw new Error("В файле Autorun.bas должен быть хук Loop()!");
-                $Loop = function () { };
-            }
+            if (typeof (Loop) === "function") Loop();//eslint-disable-line
+            else throw new Error("В файле Autorun.bas должен быть хук Loop()!");
         }
         $Loop();
     }

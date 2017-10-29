@@ -11,7 +11,7 @@
         "no-this-before-super": "warn",
         "no-undef": "warn",
         "no-unreachable": "warn",
-        "no-unused-vars": "warn",
+        "no-unused-vars": "off",
         "constructor-super": "warn",
         "valid-typeof": "warn",
         "no-console": "off",
@@ -24,7 +24,7 @@
         "wrap-iife": [2, "inside"],
         "no-return-assign":"warn",
         "no-underscore-dangle":"off",
-        "consistent-return":"warn"
+        "consistent-return":"off"
     },
     "parserOptions": {
         "ecmaVersion": 6,
