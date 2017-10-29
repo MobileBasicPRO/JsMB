@@ -25,24 +25,22 @@ if (typeof require === "function" && require("nw.gui")) {
     $NW = require("nw.gui");
 } else $NW = null;
 
-if (!$JsMobileBasic.Mobile) debug('#===== Включён режим отладки =====#', 'color:gray;');
-if (!$JsMobileBasic.Mobile) debug($JsMobileBasic.name, 'background:gray;color:yellow;');
-if (!$JsMobileBasic.Mobile) debug($JsMobileBasic.version, 'background:gray;color:yellow;');
-if (!$JsMobileBasic.Mobile) debug($JsMobileBasic.author, 'background:gray;color:yellow;');
-if (!$JsMobileBasic.Mobile) debug($JsMobileBasic.url, 'background:gray;color:yellow;');
+debug('#===== Включён режим отладки =====#', 'color:gray;');
+debug($JsMobileBasic.name, 'background:gray;color:yellow;');
+debug($JsMobileBasic.version, 'background:gray;color:yellow;');
+debug($JsMobileBasic.author, 'background:gray;color:yellow;');
+debug($JsMobileBasic.url, 'background:gray;color:yellow;');
 
 // ======Инициализация рабочей среды======//
-if (!$JsMobileBasic.Mobile) debug('// ======Инициализация рабочей среды======//', 'color:gray;');
+debug('// ======Инициализация рабочей среды======//', 'color:gray;');
 // Чтение конфига
 if (typeof $Config == "undefined") {
     console.error('Не найдена конфигурация в файле index.html!');
 }
 
-if ($Config.fullscreen) fullScreen(1);
-
 if ($Config.type == 'graphic') {
     $JsMobileBasic.graphic = true;
-    if (!$JsMobileBasic.Mobile) debug('Используется графика!', 'background:black;color:yellow;');
+    debug('Используется графика!', 'background:black;color:yellow;');
 
     $JsMobileBasic.$style = document.createElement('style');
     $JsMobileBasic.$style.innerHTML = 'html{overflow: hidden;} body{margin:0;padding:0;}';
@@ -52,7 +50,7 @@ if ($Config.type == 'graphic') {
     //    $JsMobileBasic.canvas = c;
     var ctx = c.getContext("2d");
     if ($Config.canvas_size[0] == '*' && $Config.canvas_size[1] == '*') {
-        if (!$JsMobileBasic.Mobile) debug('Canvas растянут на весь экран', 'background:black;color:#00ff00;');
+        debug('Canvas растянут на весь экран', 'background:black;color:#00ff00;');
         if (!$JsMobileBasic.Mobile) {
             $Config.canvas_size[2] ? debug('Вмещение включено') : debug('Вмещение выключено');
         }
@@ -62,23 +60,23 @@ if ($Config.type == 'graphic') {
             c.style = 'display:block; margin:0; padding:0; position:fixed; top:0px; left: 0px; width:100%; height:100%;';
         }
     } else {
-        if (!$JsMobileBasic.Mobile) debug($Config.canvas_size);
+        debug($Config.canvas_size);
         c.height = $Config.canvas_size[1];
         c.width = $Config.canvas_size[0];
     }
 } else {
-    if (!$JsMobileBasic.Mobile) debug('Графика не используется!', 'background:black;color:yellow;');
+    debug('Графика не используется!', 'background:black;color:yellow;');
     var c = window;
     var ctx = false;
     if (document.getElementById('c') != undefined) document.body.removeChild(document.getElementById('c'));
 }
 
 document.getElementsByTagName('title')[0].innerHTML = $Config.name;
-if (!$JsMobileBasic.Mobile) debug('Имя проекта: ' + $Config.name, 'background:brown;color:yellow;');
+debug('Имя проекта: ' + $Config.name, 'background:brown;color:yellow;');
 
 var $Player = [document.getElementById("player0")];
 
-if (!$JsMobileBasic.Mobile) debug('// ======Инициализация интерпретатора======//', 'color:gray;');
+debug('// ======Инициализация интерпретатора======//', 'color:gray;');
 
 
 //Контейнеры
@@ -913,7 +911,7 @@ c.oncontextmenu = function () {
     return false;
 }
 
-if (!$JsMobileBasic.Mobile) debug('// ======Инициализация завершена======//', 'background:black;color: #00ff00;');
+debug('// ======Инициализация завершена======//', 'background:black;color: #00ff00;');
 
 onload = function () {
     _eventListeners();
@@ -935,4 +933,4 @@ onload = function () {
     }
 }
 
-if (!$JsMobileBasic.Mobile) debug('// ======Подключение модулей/библиотек======//', 'color:gray;');
+debug('// ======Подключение модулей/библиотек======//', 'color:gray;');
