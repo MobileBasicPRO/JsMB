@@ -429,7 +429,7 @@ function input(text) {
 //Вывод
 
 
-function println(text) {
+function println(...text) {
     var p = document.getElementById('p');
     p.style = "position:fixed;top:0px;left:0px;width:100%;height:100%;-webkit-user-select:none;";
     p.innerHTML += text + "<br/>";
@@ -530,10 +530,10 @@ function exp(x) {
 }
 
 function limit(variable, a, b) {
-    return variable < a ? a : b; //TODO: Test
+    return variable <= a ? a : b;
 }
-var min = Math.min;
-var max = Math.max;
+const min = Math.min;
+const max = Math.max;
 
 function rad(deg) {
     if (deg == 90) {
