@@ -549,8 +549,7 @@ function toJSON(object) {
 
 //Контекстное меню
 function menuAdd(name, title, onClick, type, fortype) {
-    $Init.NW[0]();
-    if (!$Init.NW[2]) {
+    if ($NW) {
         if ($Menu[name] == undefined) {
             $Menu[name] = new $NW.Menu();
         }
@@ -583,7 +582,7 @@ function menuAdd(name, title, onClick, type, fortype) {
 }
 
 function menuShow(name, x, y) {
-    if (!$Init.NW[2]) {
+    if ($NW) {
         $Menu[name].popup(x, y);
         return true;
     } else {
@@ -593,8 +592,7 @@ function menuShow(name, x, y) {
 }
 
 function menuAddSeparator(name) {
-    $Init.NW[0]();
-    if (!$Init.NW[2]) {
+    if ($NW) {
         if ($Menu[name] == undefined) {
             $Menu[name] = new $NW.Menu();
         }
@@ -611,8 +609,7 @@ function menuAddSeparator(name) {
 //Menu bar
 
 function menuBarAdd(name, title, subMenu) {
-    $Init.NW[0]();
-    if (!$Init.NW[2]) {
+    if ($NW) {
         if ($Menu.$Bar[name] == undefined) {
             $Menu.$Bar[name] = new $NW.Menu({
                 type: 'menubar',
@@ -631,7 +628,7 @@ function menuBarAdd(name, title, subMenu) {
 }
 
 function menuBarShow(name) {
-    if (!$Init.NW[2]) {
+    if ($NW) {
         $NW.Window.get().menu = $Menu.$Bar[name];
         return true;
     } else {
@@ -644,8 +641,7 @@ function menuBarShow(name) {
 //clipboard
 
 function getClipboard(type = 'text') {
-    $Init.NW[0]();
-    if (!$Init.NW[2]) {
+    if ($NW) {
         var clipboard = $NW.Clipboard.get();
         return clipboard.get(type);
     } else {
@@ -655,8 +651,7 @@ function getClipboard(type = 'text') {
 }
 
 function setClipboard(value, type = 'text') {
-    $Init.NW[0]();
-    if (!$Init.NW[2]) {
+    if ($NW) {
         var clipboard = $NW.Clipboard.get();
         clipboard.set(value, type);
         return true;
@@ -667,8 +662,7 @@ function setClipboard(value, type = 'text') {
 }
 
 function clearClipboard() {
-    $Init.NW[0]();
-    if (!$Init.NW[2]) {
+    if ($NW) {
         var clipboard = $NW.Clipboard.get();
         clipboard.clear();
         return true;
@@ -681,8 +675,7 @@ function clearClipboard() {
 //tray
 
 function menuTrayAdd(name, title, icon, menu) {
-    $Init.NW[0]();
-    if (!$Init.NW[2]) {
+    if ($NW) {
         var tray = new $NW.Tray({
             title: title,
             icon: icon,
@@ -698,28 +691,19 @@ function menuTrayAdd(name, title, icon, menu) {
 
 //Процессы
 
-function exec(target) {
-    $Init.Proc[0]();
-    if (!$Init.Proc[2]) {
-        $Proc.execSync(target);
-    }
+function exec(target) { //TODO: ->$Proc.js
+    $Proc.execSync(target);
     return true;
 }
 
-function execFile(file, keys = []) {
-    $Init.Proc[0]();
-    if (!$Init.Proc[2]) {
-        var proc = $Proc.execFile(file, keys, (error, stdout, stderr) => {
-            if (error) {
-                debug("Ошибка при работе с процессом: " + error);
-            }
+function execFile(file, keys = []) { //TODO: ->$Proc.js
+    var proc = $Proc.execFile(file, keys, (error, stdout, stderr) => {
+        if (error) {
+            debug("Ошибка при работе с процессом: " + error);
+        }
 
-            return stdout;
-        });
-    } else {
-        debug("Работа с процессами невозможна!");
-        return false;
-    }
+        return stdout;
+    });
 }
 //Работа с модулями
 function include(file) {
@@ -812,8 +796,7 @@ function exit() {
 }
 
 function fullScreen(mode) {
-    $Init["NW"][0]();
-    if (!$Init.NW[2]) {
+    if ($NW) {
         if (mode) {
             var tmp = $NW.Window.get();
             tmp.enterFullscreen();
@@ -825,43 +808,6 @@ function fullScreen(mode) {
         debug("Работа с процессами невозможна!");
         return false;
     }
-}
-
-//HTML5 функции
-function addInputForm(id, value, x, y) {
-    // var e = document.createElement('input');
-    // e.type = 'text';
-    // e.setAttribute('id', id);
-    // e.value = value;
-    // document.getElementsByTagName("body")[0].appendChild(e);
-    //     e.style = "position: absolute; left:"+x+"px; top:"+y+"px;";
-    return false;
-}
-
-function addInputPassForm(id, value, x, y) {
-    // var e = document.createElement('input');
-    // e.type = 'password';
-    // e.setAttribute('id', id);
-    // e.value = value;
-    // document.getElementsByTagName("body")[0].appendChild(e);
-    //     e.style = "position: absolute; left:"+x+"px; top:"+y+"px;";
-    return false;
-}
-
-function addInputRadioForm(id, value, x, y) {
-    // var e = document.createElement('input');
-    // e.type = 'radio';
-    // e.setAttribute('id', id);
-    // document.getElementsByTagName("body")[0].appendChild(e);
-    //     e.style = "position: absolute; left:"+x+"px; top:"+y+"px;";
-    return false;
-}
-
-function add(code) {
-    var e = document.createElement("div");
-    e.innerHTML = code;
-    document.getElementsByTagName("body")[0].appendChild(e);
-    return true;
 }
 
 function addElement(name, type) {
