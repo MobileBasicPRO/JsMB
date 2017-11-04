@@ -9,7 +9,7 @@
 
 'use strict';
 
-var $JsMobileBasic = {
+const $JsMobileBasic = {
     name: 'JsMobileBasic',
     version: 'Alpha 11',
     author: 'PROPHESSOR',
@@ -27,8 +27,8 @@ if (typeof require === "function" && require("nw.gui")) {
 
 debug('#===== Включён режим отладки =====#', 'color:gray;');
 debug($JsMobileBasic.name, 'background:gray;color:yellow;');
-debug($JsMobileBasic.version, 'background:gray;color:yellow;');
-debug($JsMobileBasic.author, 'background:gray;color:yellow;');
+debug("v. " + $JsMobileBasic.version, 'background:gray;color:yellow;');
+debug("by " + $JsMobileBasic.author, 'background:gray;color:yellow;');
 debug($JsMobileBasic.url, 'background:gray;color:yellow;');
 
 // ======Инициализация рабочей среды======//
@@ -60,7 +60,7 @@ if ($Config.type == 'graphic') {
             c.style = 'display:block; margin:0; padding:0; position:fixed; top:0px; left: 0px; width:100%; height:100%;';
         }
     } else {
-        debug($Config.canvas_size);
+        // debug($Config.canvas_size);
         c.height = $Config.canvas_size[1];
         c.width = $Config.canvas_size[0];
     }
@@ -456,16 +456,17 @@ function exp(x) {
 function limit(variable, a, b) {
     return variable <= a ? a : b;
 }
-const min = Math.min;
-const max = Math.max;
+let min = Math.min;
+let max = Math.max;
 
 function rad(deg) {
     if (deg == 90) {
         return PI / 2;
-    } else if (deg == 270) {
+    }
+    if (deg == 270) {
         return 3 * PI / 2;
     }
-    return deg * DEG2RAD
+    return deg * DEG2RAD;
 }
 
 function deg(rad) {
@@ -482,8 +483,10 @@ function str(num) {
 }
 
 function val(str) {
-    return parseInt(str);
+    return Number(str);
 }
+
+let int = val;
 
 function upper(str) {
     return str.toUpperCase;
@@ -516,7 +519,6 @@ function replace(str, reg, to) {
 function float(str) {
     return parseFloat(str);
 }
-var int = val; //int()=parseInt()=val()
 
 //Работа с локальными данными
 
@@ -818,52 +820,51 @@ function addElement(name, type) {
 
 //Обработчики событий
 function _eventListeners() {
+    window.onClick =
+        window.onMouseDown = window.onMouseMove = window.onMouseUp = window.onKeyDown = window.onKeyPress = window.onKeyUp = window.onRightClick = window.Loop = () => {};
     c.addEventListener('mousemove', function (event) {
         $Mouse.x = event.offsetX;
         $Mouse.y = event.offsetY;
-        if (typeof (onMouseMove) !== "undefined") onMouseMove(event.pageX, event.pageY, event); //eslint-disable-line
+        onMouseMove(event.offsetX, event.offsetY, event);
     }, false);
     c.addEventListener('click', function (event) {
         $Mouse.lcount++;
-        if (typeof (onClick) !== "undefined") onClick(event.pageX, event.pageY, event); //eslint-disable-line
+        onClick(event.offsetX, event.offsetY, event);
     }, false);
     c.addEventListener('mousedown', function (event) {
-        if (typeof (onMouseDown) !== "undefined") onMouseDown(event.pageX, event.pageY, event); //eslint-disable-line
+        onMouseDown(event.offsetX, event.offsetY, event);
     }, false);
     c.addEventListener('mouseup', function (event) {
-        if (typeof (onMouseUp) !== "undefined") onMouseUp(event.pageX, event.pageY, event); //eslint-disable-line
+        onMouseUp(event.offsetX, event.offsetY, event);
     }, false);
     c.addEventListener('contextmenu', function (event) {
         $Mouse.rcount++;
-        if (typeof (onRightClick) !== "undefined") onRightClick(event.pageX, event.pageY, event); //eslint-disable-line
+        onRightClick(event.offsetX, event.offsetY, event);
     }, false);
     window.addEventListener('keypress', function (event) {
-        if (typeof (onKeyPress) !== "undefined") onKeyPress(event.keyCode, event); //eslint-disable-line
+        onKeyPress(event.keyCode, event);
     }, false);
 
     window.addEventListener('keydown', function (event) {
-        if (typeof (onKeyDown) !== "undefined") onKeyDown(event.keyCode, event); //eslint-disable-line
+        onKeyDown(event.keyCode, event);
     }, false);
 
     window.addEventListener('keyup', function (event) {
-        if (typeof (onKeyUp) !== "undefined") onKeyUp(event.keyCode, event); //eslint-disable-line
+        onKeyUp(event.keyCode, event);
     }, false);
 }
 
 // ======Прочее======//
-//Блокировка контекстного меню при правом клике
 
-c.oncontextmenu = function () {
-    return false;
-}
+c.oncontextmenu = () => false;
 
 debug('// ======Инициализация завершена======//', 'background:black;color: #00ff00;');
 
 onload = function () {
     _eventListeners();
-    if (typeof (Main) === "function") Main(); //eslint-disable-line
+    if (typeof Main === "function") Main(); //eslint-disable-line
     else throw new Error("В файле Autorun.bas должен быть хук Main()!");
-    if (typeof Loop == "function") {
+    if (typeof Loop === "function") {
         if (!window.requestAnimationFrame) {
             window.requestAnimationFrame = (window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame || window.oRequestAnimationFrame || function (fnc) {
                 return window.setTimeout(fnc, 1000 / 60);
@@ -872,8 +873,7 @@ onload = function () {
 
         function $Loop() {
             window.requestAnimationFrame($Loop);
-            if (typeof (Loop) === "function") Loop(); //eslint-disable-line
-            else throw new Error("В файле Autorun.bas должен быть хук Loop()!");
+            Loop();
         }
         $Loop();
     }
