@@ -397,128 +397,71 @@ function pauseSound(channel = 0) {
 
 //Matheматика
 
-function sqrt(x) {
-    return Math.sqrt(x);
-}
+const sqrt = Math.sqrt;
 
-function random(a, b) {
-    return Math.floor(Math.random() * b + a);
-}
+const random = (a, b) => Math.floor(Math.random() * b - a) + a;
 
-function sin(x) {
-    return Math.sin(x);
-}
+const sin = Math.sin(x);
 
-function cos(x) {
-    return Math.cos(x);
-}
+const cos = Math.cos(x);
 
-function tan(x) {
-    return Math.tan(x);
-}
+const tan = Math.tan(x);
 
-function ctg(x) {
-    return 1 / Math.tan(x);
-}
+const ctg = (x) => 1 / Math.tan(x);
 
-function asin(x) {
-    return Math.asin(x);
-}
+const asin = Math.asin(x);
 
-function acos(x) {
-    return Math.acos(x);
-}
+const acos = Math.acos(x);
 
-function atan(x) {
-    return Math.atan(x);
-}
+const atan = Math.atan(x);
 
-function mod(x, y) {
-    return x % y;
-}
+const mod = (x, y) => x % y;
 
-function abs(x) {
-    return Math.abs(x);
-}
+const abs = Math.abs(x);
 
-function pow(x, num) {
-    return Math.pow(x, num);
-}
+const pow = Math.pow(x, num);
 
-function ln(x) {
-    return Math.log(x);
-}
+const ln = Math.log(x);
 
-function exp(x) {
-    return Math.exp(x);
-}
+const exp = Math.exp(x);
 
-function limit(variable, a, b) {
-    return variable <= a ? a : b;
-}
-let min = Math.min;
-let max = Math.max;
+const limit = (variable, a, b) => variable <= a ? a : b;
 
-function rad(deg) {
-    if (deg == 90) {
-        return PI / 2;
-    }
-    if (deg == 270) {
-        return 3 * PI / 2;
-    }
+const min = Math.min;
+const max = Math.max;
+
+const rad = (deg) => {
+    if (deg === 90) return PI / 2;
+    if (deg === 270) return 3 * PI / 2;
     return deg * DEG2RAD;
 }
 
-function deg(rad) {
-    return rad * RAD2DEG;
-}
+const deg = (rad) => rad * RAD2DEG;
 
 //Строковые функции
-function len(str) {
-    return str.length;
-}
+const len = (str) => str.length;
 
-function str(num) {
-    return num.toString;
-}
+const str = (num) => num.toString();
 
-function val(str) {
-    return Number(str);
-}
+const val = (str) => Number(str);
 
-let int = val;
+const int = val;
 
-function upper(str) {
-    return str.toUpperCase;
-}
+const upper = (str) => str.toUpperCase();
 
-function lower(str) {
-    return str.toLowerCase;
-}
+const lower = (str) => str.toLowerCase();
 
-function mid(str, pos, len) {
-    return str.substr(pos, len);
-}
+const mid = (str, pos, len) => str.substr(pos, len);
 
-function chr(code) { //code to string
-    return String.fromCharCode(code);
-}
+const chr = (code) => String.fromCharCode(code); //code to string
 
-function asc(str) { //string to code
-    return str.charCode;
-}
+const asc = (str) => str.charCode; //string to code
 
-function split(str, char) {
-    return str.split(char);
-}
+const split = (str, char) => str.split(char);
 
-function replace(str, reg, to) {
-    str.replace(reg, to);
-}
+const replace = (str, reg, to) => str.replace(reg, to);
 
-function float(str) {
-    return parseFloat(str);
-}
+const float = (str) => parseFloat(str);
 
 //Работа с локальными данными
 
@@ -536,16 +479,15 @@ function localReadData(name) {
     }
 }
 
-function parseJSON(json) {
-    return JSON.parse(json);
+const parseJSON = (json) => {
+    try {
+        return JSON.parse(json);
+    }catch(e){
+        return null;
+    }
 }
 
-function toJSON(object) {
-    return JSON.stringify(object, "", 4);
-}
-
-//OS
-
+const toJSON = (object, f = null, s = 4) => JSON.stringify(object, "", 4);
 
 //Работа с NW
 
@@ -708,8 +650,8 @@ function execFile(file, keys = []) { //TODO: ->$Proc.js
     });
 }
 //Работа с модулями
-function include(file) {
-    var e = document.createElement("script");
+const include = (file) => {
+    const e = document.createElement("script");
     e.src = file;
     e.type = "text/javascript";
     document.getElementById('modules').appendChild(e);
