@@ -7,7 +7,7 @@
 
 /* global $Config */
 
-// 'use strict';
+'use strict';
 
 const $JsMobileBasic = {
     name: 'JsMobileBasic',
@@ -19,6 +19,8 @@ const $JsMobileBasic = {
     canvas: document.getElementById('c'),
     graphic: false
 }
+
+if(typeof require !== "function") window.require = ()=>console.warn("Использование системных функций не поддерживается на Вашей платформе");
 
 let $NW, $Path, $Proc;
 if (typeof require === "function" && require("nw.gui")) {
@@ -722,16 +724,12 @@ function log(text) {
 
 function debug(text, style = 'background: black; color: red;') {
     if ($Config.Debug_Mode) {
-        if (!$JsMobileBasic.Mobile) {
+        if (!$JsMobileBasic.Mobile)
             console.log('%c ' + text, style);
-            return true;
-        } else {
+        else
             alert(style);
-            return true;
-        }
-    } else {
-        return false;
     }
+    return {next:debug};
 }
 
 function exit() {
@@ -767,38 +765,46 @@ function _eventListeners() {
     c.addEventListener('mousemove', function (event) {
         $Mouse.x = event.offsetX;
         $Mouse.y = event.offsetY;
-        // onMouseMove(event.offsetX, event.offsetY, event);
+        if(typeof onMouseMove === 'function')
+            onMouseMove(event.offsetX, event.offsetY, event);
     }, false);
     c.addEventListener('click', function (event) {
         $Mouse.lcount++;
-        if(typeof onClick === 'function') onClick(event.offsetX, event.offsetY, event);
+        if(typeof onClick === 'function')
+            onClick(event.offsetX, event.offsetY, event);
     }, false);
     c.addEventListener('mousedown', function (event) {
-        // onMouseDown(event.offsetX, event.offsetY, event);
+        if(typeof onMouseDown === 'function')
+            onMouseDown(event.offsetX, event.offsetY, event);
     }, false);
     c.addEventListener('mouseup', function (event) {
-        // onMouseUp(event.offsetX, event.offsetY, event);
+        if(typeof onMouseUp === 'function')
+            onMouseUp(event.offsetX, event.offsetY, event);
     }, false);
     c.addEventListener('contextmenu', function (event) {
         $Mouse.rcount++;
-        // onRightClick(event.offsetX, event.offsetY, event);
+        if(typeof onRightClick === 'function')
+            onRightClick(event.offsetX, event.offsetY, event);
     }, false);
     window.addEventListener('keypress', function (event) {
-        // onKeyPress(event.keyCode, event);
+        if(typeof onKeyPress === 'function')
+            onKeyPress(event.keyCode, event);
     }, false);
 
     window.addEventListener('keydown', function (event) {
-        // onKeyDown(event.keyCode, event);
+        if(typeof onKeyDown === 'function')
+            onKeyDown(event.keyCode, event);
     }, false);
 
     window.addEventListener('keyup', function (event) {
-        // onKeyUp(event.keyCode, event);
+        if(typeof onKeyUp === 'function')
+            onKeyUp(event.keyCode, event);
     }, false);
 }
 
 // ======Прочее======//
 
-c.oncontextmenu = () => false;
+c.oncontextmenu = () => false; //FIXME:?
 
 debug('// ======Инициализация завершена======//', 'background:black;color: #00ff00;');
 

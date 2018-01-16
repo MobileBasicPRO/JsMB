@@ -5,6 +5,19 @@
         "es6": true,
         "node": false
     },
+    "globals": {
+        "$JsMobileBasic": true,
+        "onClick": true,
+        "onRightClick": true,
+        "onMouseMove": true,
+        "onMouseDown": true,
+        "onMouseUp": true,
+        "onKeyDown": true,
+        "onKeyUp": true,
+        "onKeyPress": true,
+        "Main": true,
+        "Loop": true
+    },
     "rules": {
         "strict": [2, "global"],
         "no-const-assign": "warn",
@@ -15,7 +28,7 @@
         "constructor-super": "warn",
         "valid-typeof": "warn",
         "no-console": "off",
-        "new-cap": "warn",
+        "new-cap": "off",
         "no-use-before-define": [2, {
             "functions": false,
             "classes": true

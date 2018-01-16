@@ -13,4 +13,3 @@ function Loop(){
 function onClick() {
     alert()
 }
-onClick();
