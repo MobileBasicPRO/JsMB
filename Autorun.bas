@@ -9,3 +9,8 @@ function Main(){
 function Loop(){
     //Этот код выполняется в цикле
 }
+
+function onClick() {
+    alert()
+}
+onClick();

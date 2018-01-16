@@ -7,7 +7,7 @@
 
 /* global $Config */
 
-'use strict';
+// 'use strict';
 
 const $JsMobileBasic = {
     name: 'JsMobileBasic',
@@ -355,7 +355,7 @@ function input(text) {
 
 function println(...text) {
     var p = document.getElementById('p');
-    p.style = "position:fixed;top:0px;left:0px;width:100%;height:100%;-webkit-user-select:none;";
+    p.style = "position:fixed;top:0px;left:0px;width:100%;height:100%;-webkit-user-select:none;    pointer-events: none;";
     p.innerHTML += text + "<br/>";
     return true;
 }
@@ -401,29 +401,29 @@ const sqrt = Math.sqrt;
 
 const random = (a, b) => Math.floor(Math.random() * b - a) + a;
 
-const sin = Math.sin(x);
+const sin = Math.sin;
 
-const cos = Math.cos(x);
+const cos = Math.cos;
 
-const tan = Math.tan(x);
+const tan = Math.tan;
 
 const ctg = (x) => 1 / Math.tan(x);
 
-const asin = Math.asin(x);
+const asin = Math.asin;
 
-const acos = Math.acos(x);
+const acos = Math.acos;
 
-const atan = Math.atan(x);
+const atan = Math.atan;
 
 const mod = (x, y) => x % y;
 
-const abs = Math.abs(x);
+const abs = Math.abs;
 
-const pow = Math.pow(x, num);
+const pow = Math.pow;
 
-const ln = Math.log(x);
+const ln = Math.log;
 
-const exp = Math.exp(x);
+const exp = Math.exp;
 
 const limit = (variable, a, b) => variable <= a ? a : b;
 
@@ -635,20 +635,20 @@ function menuTrayAdd(name, title, icon, menu) {
 
 //Процессы
 
-function exec(target) { //TODO: ->$Proc.js
-    $Proc.execSync(target);
-    return true;
-}
+// function exec(target) { //TODO: ->$Proc.js
+//     $Proc.execSync(target);
+//     return true;
+// }
 
-function execFile(file, keys = []) { //TODO: ->$Proc.js
-    var proc = $Proc.execFile(file, keys, (error, stdout, stderr) => {
-        if (error) {
-            debug("Ошибка при работе с процессом: " + error);
-        }
+// function execFile(file, keys = []) { //TODO: ->$Proc.js
+//     var proc = $Proc.execFile(file, keys, (error, stdout, stderr) => {
+//         if (error) {
+//             debug("Ошибка при работе с процессом: " + error);
+//         }
 
-        return stdout;
-    });
-}
+//         return stdout;
+//     });
+// }
 //Работа с модулями
 const include = (file) => {
     const e = document.createElement("script");
@@ -762,37 +762,37 @@ function addElement(name, type) {
 
 //Обработчики событий
 function _eventListeners() {
-    window.onClick =
-        window.onMouseDown = window.onMouseMove = window.onMouseUp = window.onKeyDown = window.onKeyPress = window.onKeyUp = window.onRightClick = window.Loop = () => {};
+    // window.onClick =
+    //     window.onMouseDown = window.onMouseMove = window.onMouseUp = window.onKeyDown = window.onKeyPress = window.onKeyUp = window.onRightClick = window.Loop = () => {};
     c.addEventListener('mousemove', function (event) {
         $Mouse.x = event.offsetX;
         $Mouse.y = event.offsetY;
-        onMouseMove(event.offsetX, event.offsetY, event);
+        // onMouseMove(event.offsetX, event.offsetY, event);
     }, false);
     c.addEventListener('click', function (event) {
         $Mouse.lcount++;
-        onClick(event.offsetX, event.offsetY, event);
+        if(typeof onClick === 'function') onClick(event.offsetX, event.offsetY, event);
     }, false);
     c.addEventListener('mousedown', function (event) {
-        onMouseDown(event.offsetX, event.offsetY, event);
+        // onMouseDown(event.offsetX, event.offsetY, event);
     }, false);
     c.addEventListener('mouseup', function (event) {
-        onMouseUp(event.offsetX, event.offsetY, event);
+        // onMouseUp(event.offsetX, event.offsetY, event);
     }, false);
     c.addEventListener('contextmenu', function (event) {
         $Mouse.rcount++;
-        onRightClick(event.offsetX, event.offsetY, event);
+        // onRightClick(event.offsetX, event.offsetY, event);
     }, false);
     window.addEventListener('keypress', function (event) {
-        onKeyPress(event.keyCode, event);
+        // onKeyPress(event.keyCode, event);
     }, false);
 
     window.addEventListener('keydown', function (event) {
-        onKeyDown(event.keyCode, event);
+        // onKeyDown(event.keyCode, event);
     }, false);
 
     window.addEventListener('keyup', function (event) {
-        onKeyUp(event.keyCode, event);
+        // onKeyUp(event.keyCode, event);
     }, false);
 }
 
