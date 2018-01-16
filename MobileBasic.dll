@@ -495,7 +495,9 @@ const JsMB = {
         }
     },
 
-    toJSON: (object, f = null, s = 4) => JSON.stringify(object, "", 4),
+    toJSON: (object, f = null, s = 4) => JSON.stringify(object, f, 4),
+
+    toPSON: (object, s) => JSON.stringify(object, (a,b)=>typeof b==='function'?''+b:b, s),
 
     //Работа с NW
 
