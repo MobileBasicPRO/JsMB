@@ -16,9 +16,11 @@
         "onKeyUp": true,
         "onKeyPress": true,
         "Main": true,
-        "Loop": true
+        "Loop": true,
+        "debug": false
     },
     "rules": {
+        "no-var":"error",
         "strict": [2, "global"],
         "no-const-assign": "warn",
         "no-this-before-super": "warn",

@@ -55,19 +55,21 @@ const JsMB = {
     __init() {
         if (typeof require !== "function") window.require = () => console.warn("Использование системных функций не поддерживается на Вашей платформе");
 
-        let $NW, $Path, $Proc;
+        this.$NW = {};
+        this.$Path = {};
+        this.$Proc = {};
         if (typeof require === "function" && require("nw.gui")) {
-            $NW = require("nw.gui");
-        } else $NW = null;
+            this.$NW = require("nw.gui");
+        } else this.$NW = null;
 
-        debug('#===== Включён режим отладки =====#', 'color:gray;');
-        debug($JsMobileBasic.name, 'background:gray;color:yellow;');
-        debug("v. " + $JsMobileBasic.version, 'background:gray;color:yellow;');
-        debug("by " + $JsMobileBasic.author, 'background:gray;color:yellow;');
-        debug($JsMobileBasic.url, 'background:gray;color:yellow;');
+        this.debug('#===== Включён режим отладки =====#', 'color:gray;');
+        this.debug($JsMobileBasic.name, 'background:gray;color:yellow;');
+        this.debug("v. " + $JsMobileBasic.version, 'background:gray;color:yellow;');
+        this.debug("by " + $JsMobileBasic.author, 'background:gray;color:yellow;');
+        this.debug($JsMobileBasic.url, 'background:gray;color:yellow;');
 
         // ======Инициализация рабочей среды======//
-        debug('// ======Инициализация рабочей среды======//', 'color:gray;');
+        this.debug('// ======Инициализация рабочей среды======//', 'color:gray;');
         // Чтение конфига
         if (typeof $Config == "undefined") {
             console.error('Не найдена конфигурация в файле index.html!');
@@ -75,7 +77,7 @@ const JsMB = {
 
         if ($Config.type == 'graphic') {
             $JsMobileBasic.graphic = true;
-            debug('Используется графика!', 'background:black;color:yellow;');
+            this.debug('Используется графика!', 'background:black;color:yellow;');
 
             $JsMobileBasic.$style = document.createElement('style');
             $JsMobileBasic.$style.innerHTML = 'html{overflow: hidden;} body{margin:0;padding:0;}';
@@ -85,9 +87,9 @@ const JsMB = {
             //    $JsMobileBasic.canvas = this.c;
             this.ctx = this.c.getContext("2d");
             if ($Config.canvas_size[0] == '*' && $Config.canvas_size[1] == '*') {
-                debug('Canvas растянут на весь экран', 'background:black;color:#00ff00;');
+                this.debug('Canvas растянут на весь экран', 'background:black;color:#00ff00;');
                 if (!$JsMobileBasic.Mobile) {
-                    $Config.canvas_size[2] ? debug('Вмещение включено') : debug('Вмещение выключено');
+                    $Config.canvas_size[2] ? this.debug('Вмещение включено') : this.debug('Вмещение выключено');
                 }
                 this.c.height = window.innerHeight;
                 this.c.width = window.innerWidth;
@@ -95,23 +97,23 @@ const JsMB = {
                     this.c.style = 'display:block; margin:0; padding:0; position:fixed; top:0px; left: 0px; width:100%; height:100%;';
                 }
             } else {
-                // debug($Config.canvas_size);
+                // this.debug(this.$Config.canvas_size);
                 this.c.height = $Config.canvas_size[1];
                 this.c.width = $Config.canvas_size[0];
             }
         } else {
-            debug('Графика не используется!', 'background:black;color:yellow;');
+            this.debug('Графика не используется!', 'background:black;color:yellow;');
             this.c = window;
             this.ctx = false;
             if (document.getElementById('c') != undefined) document.body.removeChild(document.getElementById('c'));
         }
 
         document.getElementsByTagName('title')[0].innerHTML = $Config.name;
-        debug('Имя проекта: ' + $Config.name, 'background:brown;color:yellow;');
+        this.debug('Имя проекта: ' + $Config.name, 'background:brown;color:yellow;');
 
-        var $Player = [document.getElementById("player0")];
+        this.$Player = [document.getElementById("player0")];
 
-        debug('// ======Инициализация интерпретатора======//', 'color:gray;');
+        this.debug('// ======Инициализация интерпретатора======//', 'color:gray;');
 
     },
 
@@ -132,15 +134,15 @@ const JsMB = {
     },
 
     cls() {
-        clearRect(0, 0, screenWidth(), screenHeight());
+        this.clearRect(0, 0, this.screenWidth(), this.screenHeight());
         document.getElementById('p').innerHTML = '';
         return this;
     },
 
     fillScreen(color) {
         this.ctx.save();
-        setColor(color);
-        fillRect(0, 0, screenWidth(), screenHeight());
+        this.setColor(color);
+        this.fillRect(0, 0, this.screenWidth(), this.screenHeight());
         this.ctx.restore();
         return this;
     },
@@ -152,8 +154,8 @@ const JsMB = {
 
     drawPlot(x, y) {
         this.ctx.save();
-        setLineWidth(1);
-        drawLine(x, y, x + 1, y + 1);
+        this.setLineWidth(1);
+        this.drawLine(x, y, x + 1, y + 1);
         this.ctx.restore()
         return this;
     },
@@ -174,10 +176,10 @@ const JsMB = {
     drawCube(x, y, x1, y1, q) {
         this.ctx.strokeRect(x, y, x1, y1);
         this.ctx.strokeRect(x + (q / Math.sqrt(2)), y + (q / Math.sqrt(2)), x1, y1);
-        drawLine(x, y, x + (q / Math.sqrt(2)), y + (q / Math.sqrt(2)));
-        drawLine(x + x1, y, x + x1 + (q / Math.sqrt(2)), y + (q / Math.sqrt(2)));
-        drawLine(x, y + y1, x + (q / Math.sqrt(2)), y + y1 + (q / Math.sqrt(2)));
-        drawLine(x + x1, y + y1, x + x1 + (q / Math.sqrt(2)), y + y1 + (q / Math.sqrt(2)));
+        this.drawLine(x, y, x + (q / Math.sqrt(2)), y + (q / Math.sqrt(2)));
+        this.drawLine(x + x1, y, x + x1 + (q / Math.sqrt(2)), y + (q / Math.sqrt(2)));
+        this.drawLine(x, y + y1, x + (q / Math.sqrt(2)), y + y1 + (q / Math.sqrt(2)));
+        this.drawLine(x + x1, y + y1, x + x1 + (q / Math.sqrt(2)), y + y1 + (q / Math.sqrt(2)));
         return this;
     },
 
@@ -269,14 +271,14 @@ const JsMB = {
     },
 
     setFontSize(size) {
-        this.ctx.font = size + "px " + $Font.family;
-        $Font.size = size;
+        this.ctx.font = size + "px " + this.$Font.family;
+        this.$Font.size = size;
         return this;
     },
 
     setFont(family) {
-        this.ctx.font = $Font.size + "px " + family;
-        $Font.family = family;
+        this.ctx.font = this.$Font.size + "px " + family;
+        this.$Font.family = family;
         return this;
     },
 
@@ -306,8 +308,8 @@ const JsMB = {
     //Гели/спрайты
 
     gelLoad(file, name) {
-        $Gel[name] = new Image();
-        $Gel[name].src = file;
+        this.$Gel[name] = new Image();
+        this.$Gel[name].src = file;
         return this;
     },
 
@@ -321,10 +323,10 @@ const JsMB = {
     },
 
     drawGel(name, x, y) {
-        if ($Gel[name].resize == true) {
-            this.ctx.drawImage($Gel[name], x, y, $Gel[name].w, $Gel[name].h);
+        if (this.$Gel[name].resize == true) {
+            this.ctx.drawImage(this.$Gel[name], x, y, this.$Gel[name].w, this.$Gel[name].h);
         } else {
-            this.ctx.drawImage($Gel[name], x, y);
+            this.ctx.drawImage(this.$Gel[name], x, y);
         }
         return this;
     },
@@ -335,19 +337,19 @@ const JsMB = {
     },
 
     gelSize(name, w, h) {
-        $Gel[name].resize = true;
-        $Gel[name].w = w;
-        $Gel[name].h = h;
+        this.$Gel[name].resize = true;
+        this.$Gel[name].w = w;
+        this.$Gel[name].h = h;
         return this;
     },
 
     drawGelFragment(name, fx, fy, fw, fh, x, y, w = fw, h = fh) { //TODO: Проверить
-        this.ctx.drawImage($Gel[name], fx, fy, fw, fh, x, y, w, h);
+        this.ctx.drawImage(this.$Gel[name], fx, fy, fw, fh, x, y, w, h);
         return this;
     },
 
     makeTexture(gelname, repeat = 'repeat') { //repeat/no-repeat
-        return this.ctx.createPattern($Gel[gelname], repeat);
+        return this.ctx.createPattern(this.$Gel[gelname], repeat);
     },
 
 
@@ -371,35 +373,35 @@ const JsMB = {
     //Звук
 
     playSound(file, loop, channel = 0) {
-        if ($Player[channel] === undefined) {
+        if (this.$Player[channel] === undefined) {
             var p = document.createElement('audio');
             p.id = "player" + channel;
             document.getElementById('audio').appendChild(p);
-            $Player[channel] = document.getElementById('player' + channel);
+            this.$Player[channel] = document.getElementById('player' + channel);
         }
-        $Player[channel].setAttribute("src", file);
+        this.$Player[channel].setAttribute("src", file);
         if (!loop) {
-            $Player[channel].setAttribute('loop', '0');
-            $Player[channel].play();
+            this.$Player[channel].setAttribute('loop', '0');
+            this.$Player[channel].play();
         } else {
-            $Player[channel].setAttribute('loop', '1');
-            $Player[channel].play();
+            this.$Player[channel].setAttribute('loop', '1');
+            this.$Player[channel].play();
         }
         return this;
     },
 
     pauseSound(channel = 0) {
         if (channel == -1) {
-            for (var i in $Player) {
-                $Player[i].pause();
+            for (var i in this.$Player) {
+                this.$Player[i].pause();
             }
             return this;
         }
-        if ($Player[channel] === undefined) {
+        if (this.$Player[channel] === undefined) {
             debug("На данном канале нет плеера");
             return false;
         }
-        $Player[channel].pause();
+        this.$Player[channel].pause();
         return this;
     },
 
@@ -439,12 +441,12 @@ const JsMB = {
     max: Math.max,
 
     rad: (deg) => {
-        if (deg === 90) return PI / 2;
-        if (deg === 270) return 3 * PI / 2;
-        return deg * DEG2RAD;
+        if (deg === 90) return this.PI / 2;
+        if (deg === 270) return 3 * this.PI / 2;
+        return deg * this.DEG2RAD;
     },
 
-    deg: (rad) => rad * RAD2DEG,
+    deg: (rad) => rad * this.RAD2DEG,
 
     //Строковые функции
     len: (str) => str.length,
@@ -474,14 +476,14 @@ const JsMB = {
     //Работа с локальными данными
 
     localSaveData(name, _data) {
-        const data = typeof (_data) == "object" ? toJSON(_data) : _data;
+        const data = typeof (_data) == "object" ? this.toJSON(_data) : _data;
         window.localStorage.setItem(name, data);
         return this;
     },
 
     localReadData(name) {
         try {
-            return parseJSON(window.localStorage.getItem(name));
+            return this.parseJSON(window.localStorage.getItem(name));
         } catch (e) {
             return window.localStorage.getItem(name);
         }
@@ -503,25 +505,25 @@ const JsMB = {
 
     //Контекстное меню
     menuAdd(name, title, onClick, type, fortype) {
-        if ($NW) {
-            if ($Menu[name] == undefined) {
-                $Menu[name] = new $NW.Menu();
+        if (this.$NW) {
+            if (this.$Menu[name] == undefined) {
+                this.$Menu[name] = new this.$NW.Menu();
             }
             switch (type) {
                 case undefined:
-                    $Menu[name].append(new $NW.MenuItem({
+                    this.$Menu[name].append(new this.$NW.MenuItem({
                         label: title,
                         click: onClick
                     }));
                     break;
                 case 'subMenu':
-                    $Menu[name].append(new $NW.MenuItem({
+                    this.$Menu[name].append(new this.$NW.MenuItem({
                         label: title,
                         submenu: fortype
                     }));
                     break;
                 case 'checkbox':
-                    $Menu[name].append(new $NW.MenuItem({
+                    this.$Menu[name].append(new this.$NW.MenuItem({
                         label: title,
                         type: 'checkbox',
                         click: onClick
@@ -536,8 +538,8 @@ const JsMB = {
     },
 
     menuShow(name, x, y) {
-        if ($NW) {
-            $Menu[name].popup(x, y);
+        if (this.$NW) {
+            this.$Menu[name].popup(x, y);
             return this;
         } else {
             debug('Отображение меню невозможно!');
@@ -546,11 +548,11 @@ const JsMB = {
     },
 
     menuAddSeparator(name) {
-        if ($NW) {
-            if ($Menu[name] == undefined) {
-                $Menu[name] = new $NW.Menu();
+        if (this.$NW) {
+            if (this.$Menu[name] == undefined) {
+                this.$Menu[name] = new this.$NW.Menu();
             }
-            $Menu[name].append(new $NW.MenuItem({
+            this.$Menu[name].append(new this.$NW.MenuItem({
                 type: 'separator'
             }));
             return this;
@@ -563,16 +565,16 @@ const JsMB = {
     //Menu bar
 
     menuBarAdd(name, title, subMenu) {
-        if ($NW) {
-            if ($Menu.$Bar[name] == undefined) {
-                $Menu.$Bar[name] = new $NW.Menu({
+        if (this.$NW) {
+            if (this.$Menu.$Bar[name] == undefined) {
+                this.$Menu.$Bar[name] = new this.$NW.Menu({
                     type: 'menubar',
                     title: title
                 });
             }
-            $Menu.$Bar[name].append(new $NW.MenuItem({
+            this.$Menu.$Bar[name].append(new this.$NW.MenuItem({
                 label: title,
-                submenu: $Menu[subMenu]
+                submenu: this.$Menu[subMenu]
             }));
             return this;
         } else {
@@ -582,8 +584,8 @@ const JsMB = {
     },
 
     menuBarShow(name) {
-        if ($NW) {
-            $NW.Window.get().menu = $Menu.$Bar[name];
+        if (this.$NW) {
+            this.$NW.Window.get().menu = this.$Menu.$Bar[name];
             return this;
         } else {
             debug('Отображение меню невозможно!');
@@ -595,8 +597,8 @@ const JsMB = {
     //clipboard
 
     getClipboard(type = 'text') {
-        if ($NW) {
-            var clipboard = $NW.Clipboard.get();
+        if (this.$NW) {
+            var clipboard = this.$NW.Clipboard.get();
             return clipboard.get(type);
         } else {
             debug('Работа с буфером обмена невозможна!');
@@ -605,8 +607,8 @@ const JsMB = {
     },
 
     setClipboard(value, type = 'text') {
-        if ($NW) {
-            var clipboard = $NW.Clipboard.get();
+        if (this.$NW) {
+            var clipboard = this.$NW.Clipboard.get();
             clipboard.set(value, type);
             return this;
         } else {
@@ -616,8 +618,8 @@ const JsMB = {
     },
 
     clearClipboard() {
-        if ($NW) {
-            var clipboard = $NW.Clipboard.get();
+        if (this.$NW) {
+            var clipboard = this.$NW.Clipboard.get();
             clipboard.clear();
             return this;
         } else {
@@ -629,13 +631,13 @@ const JsMB = {
     //tray
 
     menuTrayAdd(name, title, icon, menu) {
-        if ($NW) {
-            var tray = new $NW.Tray({
+        if (this.$NW) {
+            var tray = new this.$NW.Tray({
                 title: title,
                 icon: icon,
                 alticon: icon
             });
-            tray.menu = $Menu[menu];
+            tray.menu = this.$Menu[menu];
             return this;
         } else {
             debug('Работа с треем невозможна!');
@@ -707,19 +709,19 @@ const JsMB = {
     },
 
     getMouseX() {
-        return $Mouse.x;
+        return this.$Mouse.x;
     },
 
     getMouseY() {
-        return $Mouse.y;
+        return this.$Mouse.y;
     },
 
     getLeftClicksCount() {
-        return $Mouse.lcount;
+        return this.$Mouse.lcount;
     },
 
     getRightClicksCount() {
-        return $Mouse.rcount;
+        return this.$Mouse.rcount;
     },
 
 
@@ -748,12 +750,12 @@ const JsMB = {
     },
 
     fullScreen(mode) {
-        if ($NW) {
+        if (this.$NW) {
             if (mode) {
-                var tmp = $NW.Window.get();
+                var tmp = this.$NW.Window.get();
                 tmp.enterFullscreen();
             } else {
-                var tmp = $NW.Window.get();
+                var tmp = this.$NW.Window.get();
                 tmp.leaveFullscreen();
             }
         } else {
@@ -763,50 +765,50 @@ const JsMB = {
     },
 
     addElement(name, type) {
-        $Element[name] = document.createElement(type);
+        this.$Element[name] = document.createElement(type);
         document.getElementById('includeHTML').appendChild(name)
-        return $Element[name];
+        return this.$Element[name];
     },
 
     //Обработчики событий
     _eventListeners() {
         // window.onClick =
         //     window.onMouseDown = window.onMouseMove = window.onMouseUp = window.onKeyDown = window.onKeyPress = window.onKeyUp = window.onRightClick = window.Loop = () => {};
-        this.c.addEventListener('mousemove', function (event) {
-            $Mouse.x = event.offsetX;
-            $Mouse.y = event.offsetY;
+        this.c.addEventListener('mousemove', (event) => {
+            this.$Mouse.x = event.offsetX;
+            this.$Mouse.y = event.offsetY;
             if (typeof onMouseMove === 'function')
                 onMouseMove(event.offsetX, event.offsetY, event);
         }, false);
-        this.c.addEventListener('click', function (event) {
-            $Mouse.lcount++;
+        this.c.addEventListener('click', (event) => {
+            this.$Mouse.lcount++;
             if (typeof onClick === 'function')
                 onClick(event.offsetX, event.offsetY, event);
         }, false);
-        this.c.addEventListener('mousedown', function (event) {
+        this.c.addEventListener('mousedown', (event) => {
             if (typeof onMouseDown === 'function')
                 onMouseDown(event.offsetX, event.offsetY, event);
         }, false);
-        this.c.addEventListener('mouseup', function (event) {
+        this.c.addEventListener('mouseup', (event) => {
             if (typeof onMouseUp === 'function')
                 onMouseUp(event.offsetX, event.offsetY, event);
         }, false);
-        this.c.addEventListener('contextmenu', function (event) {
-            $Mouse.rcount++;
+        this.c.addEventListener('contextmenu', (event) => {
+            this.$Mouse.rcount++;
             if (typeof onRightClick === 'function')
                 onRightClick(event.offsetX, event.offsetY, event);
         }, false);
-        window.addEventListener('keypress', function (event) {
+        window.addEventListener('keypress', (event) => {
             if (typeof onKeyPress === 'function')
                 onKeyPress(event.keyCode, event);
         }, false);
 
-        window.addEventListener('keydown', function (event) {
+        window.addEventListener('keydown', (event) => {
             if (typeof onKeyDown === 'function')
                 onKeyDown(event.keyCode, event);
         }, false);
 
-        window.addEventListener('keyup', function (event) {
+        window.addEventListener('keyup', (event) => {
             if (typeof onKeyUp === 'function')
                 onKeyUp(event.keyCode, event);
         }, false);
@@ -816,12 +818,12 @@ const JsMB = {
 
 JsMB.__preinit();
 Object.assign(window, JsMB);
-__init();
+JsMB.__init();
 
 debug('// ======Инициализация завершена======//', 'background:black;color: #00ff00;');
 
 window.addEventListener('load', function () {
-    _eventListeners();
+    JsMB._eventListeners();
     if (typeof Main === "function") Main(); //eslint-disable-line
     else throw new Error("В файле Autorun.bas должен быть хук Main()!");
     if (typeof Loop === "function") {
