@@ -98,3 +98,53 @@ Alpha8{
 		Android Library
 		Raycasting Library
 }
+Alpha9{
+	Глобальные изменения:
+		Хуки (кроме Main и Loop) теперь не являются обязательными!
+		Добавлен параметр fullscreen в конфиг
+		Добавлена многоканальность звуков
+	Операторы:
+		playSound(file[String], loop[Boolean], channel[Number])
+		pauseSound(channel[Number]) //-1 для остановки всего
+		execFile(file["String"], keys["Array"])
+		localSaveData(name, data)
+		localReadData(name)
+		split(str,char)
+		replace(str,reg,to)
+		int(str)
+	Исправления:
+		Исправлены некоторые баги. (которые нашли)
+		Улучшена оптимизация
+}
+Alpha 10{
+    Глобальные изменения:
+        Добавлена передача ивентов в хуки
+    Операторы:
+        rgb(red,green,blue)
+        rgba(red,green,blue,alpha)
+        ln(x) //Она и так была, но не работала
+        float(string)
+        saveData(name,data,callback)
+        readData(name)
+        exec(command)
+        fullScreen(mode)
+    Исправления:
+        Убрана туева куча гов... устаревшего кода
+        Функция ctg(x)
+        localSaveData, localReadData
+		Улучшена оптимизация
+}
+Alpha 11{
+	Глобальные изменения:
+		ES5 -> ES6
+		Инкапсулированная объектная структура
+		Работа с файловой системой и процессами вынесена в модули
+		Новая система модулей
+		Операторы возвращают this(JsMB) вместо true
+	Модули:
+		$File
+		$Process
+	Исправления:
+		Ошибка с перехватом событий из-за перекрытия элементами
+		Другие известные ошибки
+}
