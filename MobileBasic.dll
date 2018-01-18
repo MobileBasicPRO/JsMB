@@ -316,7 +316,7 @@ const JsMB = {
     spriteGel(file, name) {
         // $Gel.$Sprite[name] = new Sprite();
         // $Gel.$Sprite[name].src = file;
-        debug('Внимание! Функция spriteGel работает некорректно! Обновитесь до последней версии!');
+        this.debug('Внимание! Функция spriteGel работает некорректно! Обновитесь до последней версии!');
         return false;
         //    var this.c = new Sprite();
 
@@ -398,7 +398,7 @@ const JsMB = {
             return this;
         }
         if (this.$Player[channel] === undefined) {
-            debug("На данном канале нет плеера");
+            this.debug("На данном канале нет плеера");
             return false;
         }
         this.$Player[channel].pause();
@@ -532,7 +532,7 @@ const JsMB = {
             }
             return this;
         } else {
-            debug('Создание меню невозможно!');
+            this.debug('Создание меню невозможно!');
             return false;
         }
     },
@@ -542,7 +542,7 @@ const JsMB = {
             this.$Menu[name].popup(x, y);
             return this;
         } else {
-            debug('Отображение меню невозможно!');
+            this.debug('Отображение меню невозможно!');
             return false;
         }
     },
@@ -557,7 +557,7 @@ const JsMB = {
             }));
             return this;
         } else {
-            debug('Создание меню невозможно!');
+            this.debug('Создание меню невозможно!');
             return false;
         }
     },
@@ -578,7 +578,7 @@ const JsMB = {
             }));
             return this;
         } else {
-            debug('Создание меню невозможно!');
+            this.debug('Создание меню невозможно!');
             return false;
         }
     },
@@ -588,7 +588,7 @@ const JsMB = {
             this.$NW.Window.get().menu = this.$Menu.$Bar[name];
             return this;
         } else {
-            debug('Отображение меню невозможно!');
+            this.debug('Отображение меню невозможно!');
             return false;
         }
     },
@@ -601,7 +601,7 @@ const JsMB = {
             let clipboard = this.$NW.Clipboard.get();
             return clipboard.get(type);
         } else {
-            debug('Работа с буфером обмена невозможна!');
+            this.debug('Работа с буфером обмена невозможна!');
             return false;
         }
     },
@@ -612,7 +612,7 @@ const JsMB = {
             clipboard.set(value, type);
             return this;
         } else {
-            debug('Работа с буфером обмена невозможна!');
+            this.debug('Работа с буфером обмена невозможна!');
             return false;
         }
     },
@@ -623,7 +623,7 @@ const JsMB = {
             clipboard.clear();
             return this;
         } else {
-            debug('Работа с буфером обмена невозможна!');
+            this.debug('Работа с буфером обмена невозможна!');
             return false;
         }
     },
@@ -640,7 +640,7 @@ const JsMB = {
             tray.menu = this.$Menu[menu];
             return this;
         } else {
-            debug('Работа с треем невозможна!');
+            this.debug('Работа с треем невозможна!');
             return false;
         }
     },
@@ -740,7 +740,7 @@ const JsMB = {
                 alert(style);
         }
         return {
-            next: debug
+            next: this.debug
         };
     },
 
@@ -759,7 +759,7 @@ const JsMB = {
                 tmp.leaveFullscreen();
             }
         } else {
-            debug("Работа с процессами невозможна!");
+            this.debug("Работа с процессами невозможна!");
             return false;
         }
     },
@@ -820,7 +820,7 @@ JsMB.__preinit();
 Object.assign(window, JsMB);
 JsMB.__init();
 
-debug('// ======Инициализация завершена======//', 'background:black;color: #00ff00;');
+JsMB.debug('// ======Инициализация завершена======//', 'background:black;color: #00ff00;');
 
 window.addEventListener('load', function () {
     JsMB._eventListeners();
@@ -841,4 +841,4 @@ window.addEventListener('load', function () {
     }
 });
 
-debug('// ======Подключение модулей/библиотек======//', 'color:gray;');
+JsMB.debug('// ======Подключение модулей/библиотек======//', 'color:gray;');

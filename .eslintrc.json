@@ -17,7 +17,7 @@
         "onKeyPress": true,
         "Main": true,
         "Loop": true,
-        "debug": false
+        "JsMB": true
     },
     "rules": {
         "no-var":"error",
