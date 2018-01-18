@@ -6,47 +6,57 @@
  *  JsOS FS [+]
  *  Browser pseudo-fs [-]
  */
+
 'use strict';
 
-let $File, $Path;
+// /* eslint-disable */
 
-if (typeof require === "function") { //JsOS or Node
-    $File = require('fs');
-    $Path = require('path');
-} else if (typeof localStorage !== "undefined") { //Browser
-    //TODO: Add browser support
-    throw new Error("At this time, the browser is not supported!");
-} else {
-    throw new Error("Your system doesn't support FileSystem");
-}
+(function () {
+    const $File = {
+        saveData(filename, data, callback) {
+            if (!this.$NW) return !!console.error("Can't find base path");
+            const filePath = this.$Path.join(this.$NW.App.dataPath, `${filename}.json`);
+            try {
+                $File.writeFileSync(filePath, this.toJSON(data), "utf8");
+                return true;
+            } catch (e) {
+                console.error("Ошибка записи данных: ", e);
+                return false;
+            }
+        },
 
-/* eslint-disable */
+        readData(filename) {
+            if (!this.$NW) return !!console.error("Can't find base path");
+            let filePath = this.$Path.join(this.$NW.App.dataPath, `${filename}.json`);
+            let data = null;
+            try {
+                data = $File.readFileSync(filePath, 'utf8');
+            } catch (e) {
+                console.error("Ошибка чтения данных: ", e);
+                return false;
+            }
+            let json = null;
+            try {
+                json = this.parseJSON(data);
+            } catch (e) {}
+            return json || data;
+        }
+    };
 
-function saveData(filename, data, callback) {
-    if (!$NW) return !!console.error("Can't find base path");
-    const filePath = $Path.join($NW.App.dataPath, `${filename}.json`);
-    try {
-        $File.writeFileSync(filePath, toJSON(data), "utf8");
-        return true;
-    } catch (e) {
-        console.error("Ошибка записи данных: ", e);
-        return false;
+    if (typeof require === "function") { //JsOS or Node
+        $File.$File = require('fs');
+        $File.$Path = require('path');
+    } else if (typeof localStorage !== "undefined") { //Browser
+        //TODO: Add browser support
+        throw new Error("At this time, the browser is not supported!");
+    } else {
+        throw new Error("Your system doesn't support FileSystem");
     }
-}
 
-function readData(filename) {
-    if (!$NW) return !!console.error("Can't find base path");
-    var filePath = $Path.join($NW.App.dataPath, `${filename}.json`);
-    let data = null;
-    try {
-        data = $File.readFileSync(filePath, 'utf8');
-    } catch (e) {
-        console.error("Ошибка чтения данных: ", e);
-        return false;
+    for(const i in $File) {
+        if(typeof $File[i] === 'function') $File[i] = $File[i].bind(JsMB);
     }
-    let json = null;
-    try {
-        json = parseJSON(data);
-    } catch (e) {}
-    return json || data;
-}
+
+    Object.assign(JsMB, $File);
+    Object.assign(window, $File);
+})();
