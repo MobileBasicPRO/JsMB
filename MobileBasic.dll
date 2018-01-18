@@ -204,14 +204,14 @@ const JsMB = {
     },
 
     fillRect4(x, y, x1, y1, x2, y2, x3, y3) {
-        var arr = [
+        let arr = [
             [x, y],
             [x1, y1],
             [x2, y2],
             [x3, y3]
         ];
         this.ctx.beginPath();
-        for (var i = 0; i < arr.length; i++) {
+        for (let i = 0; i < arr.length; i++) {
             if (i == 0) this.ctx.moveTo(arr[i][0], arr[i][1]);
             else this.ctx.lineTo(arr[i][0], arr[i][1]);
         }
@@ -220,14 +220,14 @@ const JsMB = {
     },
 
     drawRect4(x, y, x1, y1, x2, y2, x3, y3) {
-        var arr = [
+        let arr = [
             [x, y],
             [x1, y1],
             [x2, y2],
             [x3, y3]
         ];
         this.ctx.beginPath();
-        for (var i = 0; i < arr.length; i++) {
+        for (let i = 0; i < arr.length; i++) {
             if (i == 0) this.ctx.moveTo(arr[i][0], arr[i][1]);
             else this.ctx.lineTo(arr[i][0], arr[i][1]);
         }
@@ -236,13 +236,13 @@ const JsMB = {
     },
 
     fillTriangle(x, y, x1, y1, x2, y2) {
-        var arr = [
+        let arr = [
             [x, y],
             [x1, y1],
             [x2, y2]
         ];
         this.ctx.beginPath();
-        for (var i = 0; i < arr.length; i++) {
+        for (let i = 0; i < arr.length; i++) {
             if (i == 0) this.ctx.moveTo(arr[i][0], arr[i][1]);
             else this.ctx.lineTo(arr[i][0], arr[i][1]);
         }
@@ -251,13 +251,13 @@ const JsMB = {
     },
 
     drawTriangle(x, y, x1, y1, x2, y2) {
-        var arr = [
+        let arr = [
             [x, y],
             [x1, y1],
             [x2, y2]
         ];
         this.ctx.beginPath();
-        for (var i = 0; i < arr.length; i++) {
+        for (let i = 0; i < arr.length; i++) {
             if (i == 0) this.ctx.moveTo(arr[i][0], arr[i][1]);
             else this.ctx.lineTo(arr[i][0], arr[i][1]);
         }
@@ -364,7 +364,7 @@ const JsMB = {
 
 
     println(...text) {
-        var p = document.getElementById('p');
+        let p = document.getElementById('p');
         p.style = "position:fixed;top:0px;left:0px;width:100%;height:100%;-webkit-user-select:none;    pointer-events: none;";
         p.innerHTML += text + "<br/>";
         return this;
@@ -374,7 +374,7 @@ const JsMB = {
 
     playSound(file, loop, channel = 0) {
         if (this.$Player[channel] === undefined) {
-            var p = document.createElement('audio');
+            let p = document.createElement('audio');
             p.id = "player" + channel;
             document.getElementById('audio').appendChild(p);
             this.$Player[channel] = document.getElementById('player' + channel);
@@ -392,7 +392,7 @@ const JsMB = {
 
     pauseSound(channel = 0) {
         if (channel == -1) {
-            for (var i in this.$Player) {
+            for (let i in this.$Player) {
                 this.$Player[i].pause();
             }
             return this;
@@ -598,7 +598,7 @@ const JsMB = {
 
     getClipboard(type = 'text') {
         if (this.$NW) {
-            var clipboard = this.$NW.Clipboard.get();
+            let clipboard = this.$NW.Clipboard.get();
             return clipboard.get(type);
         } else {
             debug('Работа с буфером обмена невозможна!');
@@ -608,7 +608,7 @@ const JsMB = {
 
     setClipboard(value, type = 'text') {
         if (this.$NW) {
-            var clipboard = this.$NW.Clipboard.get();
+            let clipboard = this.$NW.Clipboard.get();
             clipboard.set(value, type);
             return this;
         } else {
@@ -619,7 +619,7 @@ const JsMB = {
 
     clearClipboard() {
         if (this.$NW) {
-            var clipboard = this.$NW.Clipboard.get();
+            let clipboard = this.$NW.Clipboard.get();
             clipboard.clear();
             return this;
         } else {
@@ -632,7 +632,7 @@ const JsMB = {
 
     menuTrayAdd(name, title, icon, menu) {
         if (this.$NW) {
-            var tray = new this.$NW.Tray({
+            let tray = new this.$NW.Tray({
                 title: title,
                 icon: icon,
                 alticon: icon
@@ -752,10 +752,10 @@ const JsMB = {
     fullScreen(mode) {
         if (this.$NW) {
             if (mode) {
-                var tmp = this.$NW.Window.get();
+                const tmp = this.$NW.Window.get();
                 tmp.enterFullscreen();
             } else {
-                var tmp = this.$NW.Window.get();
+                const tmp = this.$NW.Window.get();
                 tmp.leaveFullscreen();
             }
         } else {
