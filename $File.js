@@ -27,7 +27,7 @@
 
         readData(filename) {
             if (!this.$NW) return !!console.error("Can't find base path");
-            let filePath = this.$Path.join(this.$NW.App.dataPath, `${filename}.json`);
+            const filePath = this.$Path.join(this.$NW.App.dataPath, `${filename}.json`);
             let data = null;
             try {
                 data = $File.readFileSync(filePath, 'utf8');

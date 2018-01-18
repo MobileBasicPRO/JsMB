@@ -20,6 +20,7 @@
         "JsMB": true
     },
     "rules": {
+        "prefer-const": "error",
         "no-var":"error",
         "strict": [2, "global"],
         "no-const-assign": "warn",

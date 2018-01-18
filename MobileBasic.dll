@@ -204,7 +204,7 @@ const JsMB = {
     },
 
     fillRect4(x, y, x1, y1, x2, y2, x3, y3) {
-        let arr = [
+        const arr = [
             [x, y],
             [x1, y1],
             [x2, y2],
@@ -220,7 +220,7 @@ const JsMB = {
     },
 
     drawRect4(x, y, x1, y1, x2, y2, x3, y3) {
-        let arr = [
+        const arr = [
             [x, y],
             [x1, y1],
             [x2, y2],
@@ -236,7 +236,7 @@ const JsMB = {
     },
 
     fillTriangle(x, y, x1, y1, x2, y2) {
-        let arr = [
+        const arr = [
             [x, y],
             [x1, y1],
             [x2, y2]
@@ -251,7 +251,7 @@ const JsMB = {
     },
 
     drawTriangle(x, y, x1, y1, x2, y2) {
-        let arr = [
+        const arr = [
             [x, y],
             [x1, y1],
             [x2, y2]
@@ -364,7 +364,7 @@ const JsMB = {
 
 
     println(...text) {
-        let p = document.getElementById('p');
+        const p = document.getElementById('p');
         p.style = "position:fixed;top:0px;left:0px;width:100%;height:100%;-webkit-user-select:none;    pointer-events: none;";
         p.innerHTML += text + "<br/>";
         return this;
@@ -374,7 +374,7 @@ const JsMB = {
 
     playSound(file, loop, channel = 0) {
         if (this.$Player[channel] === undefined) {
-            let p = document.createElement('audio');
+            const p = document.createElement('audio');
             p.id = "player" + channel;
             document.getElementById('audio').appendChild(p);
             this.$Player[channel] = document.getElementById('player' + channel);
@@ -392,7 +392,7 @@ const JsMB = {
 
     pauseSound(channel = 0) {
         if (channel == -1) {
-            for (let i in this.$Player) {
+            for (const i in this.$Player) {
                 this.$Player[i].pause();
             }
             return this;
@@ -598,7 +598,7 @@ const JsMB = {
 
     getClipboard(type = 'text') {
         if (this.$NW) {
-            let clipboard = this.$NW.Clipboard.get();
+            const clipboard = this.$NW.Clipboard.get();
             return clipboard.get(type);
         } else {
             this.debug('Работа с буфером обмена невозможна!');
@@ -608,7 +608,7 @@ const JsMB = {
 
     setClipboard(value, type = 'text') {
         if (this.$NW) {
-            let clipboard = this.$NW.Clipboard.get();
+            const clipboard = this.$NW.Clipboard.get();
             clipboard.set(value, type);
             return this;
         } else {
@@ -619,7 +619,7 @@ const JsMB = {
 
     clearClipboard() {
         if (this.$NW) {
-            let clipboard = this.$NW.Clipboard.get();
+            const clipboard = this.$NW.Clipboard.get();
             clipboard.clear();
             return this;
         } else {
@@ -632,7 +632,7 @@ const JsMB = {
 
     menuTrayAdd(name, title, icon, menu) {
         if (this.$NW) {
-            let tray = new this.$NW.Tray({
+            const tray = new this.$NW.Tray({
                 title: title,
                 icon: icon,
                 alticon: icon

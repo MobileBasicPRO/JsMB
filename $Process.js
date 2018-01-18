@@ -12,12 +12,12 @@
 (function () {
 
 	const $Process = {
-		exec(target) { //TODO: ->$Proc.js
+		exec(target) {
 			this.$Proc.execSync(target);
 			return this;
 		},
 
-		execFile(file, keys = []) { //TODO: ->$Proc.js
+		execFile(file, keys = []) {
 			try {
 				return this.$Proc.execFileSync(file, keys);
 			} catch (e) {
@@ -30,7 +30,7 @@
 		$Process.$Proc = require('child_process');
 	} else if (typeof localStorage !== "undefined") { //Browser
 		//TODO: Add browser support
-		throw new Error("At this time, the browser is not supported!");
+		throw new Error("The browser doesn't support processes!");
 	} else {
 		throw new Error("Your system doesn't support FileSystem");
 	}
