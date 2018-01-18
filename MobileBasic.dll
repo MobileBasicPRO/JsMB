@@ -645,22 +645,6 @@ const JsMB = {
         }
     },
 
-    //Процессы
-
-    // exec(target) { //TODO: ->$Proc.js
-    //     $Proc.execSync(target);
-    //     return this;
-    // }
-
-    // execFile(file, keys = []) { //TODO: ->$Proc.js
-    //     var proc = $Proc.execFile(file, keys, (error, stdout, stderr) => {
-    //         if (error) {
-    //             debug("Ошибка при работе с процессом: " + error);
-    //         }
-
-    //         return stdout;
-    //     });
-    // }
     //Работа с модулями
     include: (file) => {
         const e = document.createElement("script");
