@@ -52,7 +52,7 @@ const JsMB = {
         }
     },
 
-    __init() {
+    __init({canvas, div}) {
         if (typeof require !== "function") window.require = () => console.warn("Использование системных функций не поддерживается на Вашей платформе");
 
         this.$NW = {};
@@ -83,7 +83,7 @@ const JsMB = {
             $JsMobileBasic.$style.innerHTML = 'html{overflow: hidden;} body{margin:0;padding:0;}';
             document.head.appendChild($JsMobileBasic.$style);
 
-            this.c = document.getElementById("c");
+            this.c = canvas;
             //    $JsMobileBasic.canvas = this.c;
             this.ctx = this.c.getContext("2d");
             if ($Config.canvas_size[0] == '*' && $Config.canvas_size[1] == '*') {
@@ -105,7 +105,7 @@ const JsMB = {
             this.debug('Графика не используется!', 'background:black;color:yellow;');
             this.c = window;
             this.ctx = false;
-            if (document.getElementById('c') != undefined) document.body.removeChild(document.getElementById('c'));
+            if (document.getElementById('c') !== undefined) document.body.removeChild(document.getElementById('c'));
         }
 
         document.getElementsByTagName('title')[0].innerHTML = $Config.name;
@@ -801,8 +801,15 @@ const JsMB = {
 // ======Прочее======//
 
 JsMB.__preinit();
-Object.assign(window, JsMB);
-JsMB.__init();
+if(typeof window !== 'undefined') {
+    Object.assign(window, JsMB);
+    JsMB.__init({
+        canvas: document.getElementById('c'),
+        div: document.getElementById('p')
+    });
+}
+
+if(typeof module === 'object') module.exports = JsMB;
 
 JsMB.debug('// ======Инициализация завершена======//', 'background:black;color: #00ff00;');
 
