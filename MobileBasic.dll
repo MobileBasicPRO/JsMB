@@ -154,12 +154,13 @@ const JsMB = {
         this.ctx.strokeRect(x, y, w, h);
         return this;
     },
-
+    
+    /** Рисует точку по координатам (заливает пиксель)
+     * @param  {number} x - X координата точки
+     * @param  {number} y - Y координата точки
+     */
     drawPlot(x, y) {
-        this.ctx.save();
-        this.setLineWidth(1);
-        this.drawLine(x, y, x + 1, y + 1);
-        this.ctx.restore()
+        this.fillRect(x, y, 1, 1);
         return this;
     },
     
