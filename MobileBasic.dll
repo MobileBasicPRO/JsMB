@@ -9,17 +9,6 @@
 
 'use strict';
 
-const $JsMobileBasic = {
-    name: 'JsMobileBasic',
-    version: 'Alpha 11',
-    author: 'PROPHESSOR',
-    url: 'http://vk.com/JsMobileBasic',
-    Mobile: $Config.Mobile,
-    Debug: true,
-    canvas: document.getElementById('c'),
-    graphic: false
-}
-
 //Графика
 
 const JsMB = {
@@ -40,6 +29,16 @@ const JsMB = {
     $Menu: {
         $Bar: {}
     },
+    $JsMobileBasic: {
+        name: 'JsMobileBasic',
+        version: 'Alpha 11',
+        author: 'PROPHESSOR',
+        url: 'http://vk.com/JsMobileBasic',
+        Mobile: $Config.Mobile,
+        Debug: true,
+        canvas: typeof document !== 'undefined' ? document.getElementById('c') : null,
+        graphic: false
+    },
 
     PI: Math.PI,
     G: 9.8,
@@ -58,37 +57,41 @@ const JsMB = {
         this.$NW = {};
         this.$Path = {};
         this.$Proc = {};
-        if (typeof require === "function" && require("nw.gui")) {
-            this.$NW = require("nw.gui");
+        if (typeof require === "function") {
+            try {
+                this.$NW = require("nw.gui");
+            }catch(e){
+                this.$NW = null; 
+            }
         } else this.$NW = null;
 
         this.debug('#===== Включён режим отладки =====#', 'color:gray;');
-        this.debug($JsMobileBasic.name, 'background:gray;color:yellow;');
-        this.debug("v. " + $JsMobileBasic.version, 'background:gray;color:yellow;');
-        this.debug("by " + $JsMobileBasic.author, 'background:gray;color:yellow;');
-        this.debug($JsMobileBasic.url, 'background:gray;color:yellow;');
+        this.debug(this.$JsMobileBasic.name, 'background:gray;color:yellow;');
+        this.debug("v. " + this.$JsMobileBasic.version, 'background:gray;color:yellow;');
+        this.debug("by " + this.$JsMobileBasic.author, 'background:gray;color:yellow;');
+        this.debug(this.$JsMobileBasic.url, 'background:gray;color:yellow;');
 
         // ======Инициализация рабочей среды======//
         this.debug('// ======Инициализация рабочей среды======//', 'color:gray;');
         // Чтение конфига
         if (typeof $Config == "undefined") {
-            console.error('Не найдена конфигурация в файле index.html!');
+            console.error('Не найден файл конфигурации!');
         }
 
         if ($Config.type == 'graphic') {
-            $JsMobileBasic.graphic = true;
+            this.$JsMobileBasic.graphic = true;
             this.debug('Используется графика!', 'background:black;color:yellow;');
 
-            $JsMobileBasic.$style = document.createElement('style');
-            $JsMobileBasic.$style.innerHTML = 'html{overflow: hidden;} body{margin:0;padding:0;}';
-            document.head.appendChild($JsMobileBasic.$style);
+            this.$JsMobileBasic.$style = document.createElement('style');
+            this.$JsMobileBasic.$style.innerHTML = 'html{overflow: hidden;} body{margin:0;padding:0;}';
+            document.head.appendChild(this.$JsMobileBasic.$style);
 
             this.c = canvas;
-            //    $JsMobileBasic.canvas = this.c;
+            //    this.$JsMobileBasic.canvas = this.c;
             this.ctx = this.c.getContext("2d");
             if ($Config.canvas_size[0] == '*' && $Config.canvas_size[1] == '*') {
                 this.debug('Canvas растянут на весь экран', 'background:black;color:#00ff00;');
-                if (!$JsMobileBasic.Mobile) {
+                if (!this.$JsMobileBasic.Mobile) {
                     $Config.canvas_size[2] ? this.debug('Вмещение включено') : this.debug('Вмещение выключено');
                 }
                 this.c.height = window.innerHeight;
@@ -103,15 +106,15 @@ const JsMB = {
             }
         } else {
             this.debug('Графика не используется!', 'background:black;color:yellow;');
-            this.c = window;
+            this.c = typeof window !== 'undefined' ? window : null;
             this.ctx = false;
-            if (document.getElementById('c') !== undefined) document.body.removeChild(document.getElementById('c'));
+            if (typeof document !== 'undefined' && document.getElementById('c') !== undefined)          document.body.removeChild(document.getElementById('c'));
         }
 
-        document.getElementsByTagName('title')[0].innerHTML = $Config.name;
+        if (typeof document !== 'undefined') document.getElementsByTagName('title')[0].innerHTML = $Config.name;
         this.debug('Имя проекта: ' + $Config.name, 'background:brown;color:yellow;');
 
-        this.$Player = [document.getElementById("player0")];
+        this.$Player = [typeof document !== 'undefined' ? document.getElementById("player0") : {}];
 
         this.debug('// ======Инициализация интерпретатора======//', 'color:gray;');
 
@@ -128,8 +131,8 @@ const JsMB = {
         return this;
     },
 
-    fillRect(x, y, x1, y1) {
-        this.ctx.fillRect(x, y, x1, y1);
+    fillRect(x, y, w, h) {
+        this.ctx.fillRect(x, y, w, h);
         return this;
     },
 
@@ -147,8 +150,8 @@ const JsMB = {
         return this;
     },
 
-    drawRect(x, y, x1, y1) {
-        this.ctx.strokeRect(x, y, x1, y1);
+    drawRect(x, y, w, h) {
+        this.ctx.strokeRect(x, y, w, h);
         return this;
     },
 
@@ -159,30 +162,57 @@ const JsMB = {
         this.ctx.restore()
         return this;
     },
-
+    
+    /** Очищяет прямоугольную область
+     * @param  {number} x - Координата X левого верхнего угла
+     * @param  {number} y - Координата Y левого верхнего угла
+     * @param  {number} w - Ширина
+     * @param  {number} h - Высота
+     */
     clearRect(x, y, x1, y1) {
         this.ctx.clearRect(x, y, x1, y1);
         return this;
     },
-
-    drawLine(x, y, x1, y1) {
+    
+    /** Рисует линию по 2 точкам
+     * @param  {number} x1 - X 1 точки
+     * @param  {number} y1 - Y 1 точки
+     * @param  {number} x2 - X 2 точки
+     * @param  {number} y2 - Y 2 точки
+     */
+    drawLine(x1, y1, x2, y2) {
         this.ctx.beginPath();
-        this.ctx.moveTo(x, y);
-        this.ctx.lineTo(x1, y1)
+        this.ctx.moveTo(x1, y1);
+        this.ctx.lineTo(x2, y2)
         this.ctx.stroke();
         return this;
     },
-
-    drawCube(x, y, x1, y1, q) {
-        this.ctx.strokeRect(x, y, x1, y1);
-        this.ctx.strokeRect(x + (q / Math.sqrt(2)), y + (q / Math.sqrt(2)), x1, y1);
+    
+    /** Рисует проекцию паралелепипеда (через 2 соединенных прямоугольника)
+     * @param  {number} x - XY левого верхнего угла
+     * @param  {number} y - XY левого верхнего угла
+     * @param  {number} w - ширина
+     * @param  {number} h - высота
+     * @param  {number} q - глубина
+     */
+    drawCube(x, y, w, h, q) {
+        this.ctx.strokeRect(x, y, w, h);
+        this.ctx.strokeRect(x + (q / Math.sqrt(2)), y + (q / Math.sqrt(2)), w, h);
         this.drawLine(x, y, x + (q / Math.sqrt(2)), y + (q / Math.sqrt(2)));
-        this.drawLine(x + x1, y, x + x1 + (q / Math.sqrt(2)), y + (q / Math.sqrt(2)));
-        this.drawLine(x, y + y1, x + (q / Math.sqrt(2)), y + y1 + (q / Math.sqrt(2)));
-        this.drawLine(x + x1, y + y1, x + x1 + (q / Math.sqrt(2)), y + y1 + (q / Math.sqrt(2)));
+        this.drawLine(x + w, y, x + w + (q / Math.sqrt(2)), y + (q / Math.sqrt(2)));
+        this.drawLine(x, y + h, x + (q / Math.sqrt(2)), y + h + (q / Math.sqrt(2)));
+        this.drawLine(x + w, y + h, x + w + (q / Math.sqrt(2)), y + h + (q / Math.sqrt(2)));
         return this;
     },
 
+    /** Рисует залитую окружность
+     * @param  {number} x - X центра
+     * @param  {number} y - Y центра
+     * @param  {number} radius - радиус
+     * @param  {number} startAngle=(15*Math.PI/7) - Угол начала
+     * @param  {number} endAngle=(13*Math.PI/2) - Угол конца
+     * @param  {bool} counterClockwise=false - По часовой стрелке?
+     */
     drawArc(x, y, radius,
         startAngle = (15 * Math.PI / 7),
         endAngle = (13 * Math.PI / 2),
@@ -192,7 +222,15 @@ const JsMB = {
         this.ctx.stroke();
         return this;
     },
-
+    
+    /** Рисует залитую окружность
+     * @param  {number} x - X центра
+     * @param  {number} y - Y центра
+     * @param  {number} radius - радиус
+     * @param  {number} startAngle=(15*Math.PI/7) - Угол начала
+     * @param  {number} endAngle=(13*Math.PI/2) - Угол конца
+     * @param  {bool} counterClockwise=false - По часовой стрелке?
+     */
     fillArc(x, y, radius,
         startAngle = (15 * Math.PI / 7),
         endAngle = (13 * Math.PI / 2),
@@ -203,49 +241,109 @@ const JsMB = {
         return this;
     },
 
-    fillRect4(x, y, x1, y1, x2, y2, x3, y3) {
-        const arr = [
-            [x, y],
-            [x1, y1],
-            [x2, y2],
-            [x3, y3]
-        ];
+    /** Рисует залитый четырехугольник по четырем точкам
+     * @param  {number} x1 - X 1 точки
+     * @param  {number} y1 - Y 1 точки
+     * @param  {number} x2 - X 2 точки
+     * @param  {number} y2 - Y 2 точки
+     * @param  {number} x3 - X 3 точки
+     * @param  {number} y3 - Y 3 точки
+     * @param  {number} x4 - X 4 точки
+     * @param  {number} y4 - Y 4 точки
+     */
+    fillRect4(x1, y1, x2, y2, x3, y3, x4, y4) {
         this.ctx.beginPath();
-        for (let i = 0; i < arr.length; i++) {
-            if (i == 0) this.ctx.moveTo(arr[i][0], arr[i][1]);
-            else this.ctx.lineTo(arr[i][0], arr[i][1]);
-        }
+        this.ctx.moveTo(x1, y1);
+        this.ctx.lineTo(x2, y2);
+        this.ctx.lineTo(x3, y3);
+        this.ctx.lineTo(x4, y4);
+        this.ctx.lineTo(x1, y1);
+        this.ctx.closePath();
         this.ctx.fill();
+
         return this;
     },
 
-    drawRect4(x, y, x1, y1, x2, y2, x3, y3) {
-        const arr = [
-            [x, y],
-            [x1, y1],
-            [x2, y2],
-            [x3, y3]
-        ];
+    /** Рисует четырехугольник по четырем точкам
+     * @param  {number} x1 - X 1 точки
+     * @param  {number} y1 - Y 1 точки
+     * @param  {number} x2 - X 2 точки
+     * @param  {number} y2 - Y 2 точки
+     * @param  {number} x3 - X 3 точки
+     * @param  {number} y3 - Y 3 точки
+     * @param  {number} x4 - X 4 точки
+     * @param  {number} y4 - Y 4 точки
+     */
+    drawRect4(x1, y1, x2, y2, x3, y3, x4, y4) {
         this.ctx.beginPath();
-        for (let i = 0; i < arr.length; i++) {
-            if (i == 0) this.ctx.moveTo(arr[i][0], arr[i][1]);
-            else this.ctx.lineTo(arr[i][0], arr[i][1]);
+        this.ctx.moveTo(x1, y1);
+        this.ctx.lineTo(x2, y2);
+        this.ctx.lineTo(x3, y3);
+        this.ctx.lineTo(x4, y4);
+        this.ctx.lineTo(x1, y1);
+        this.ctx.closePath();
+        this.ctx.stroke();
+        this.ctx.fill();
+
+        return this;
+    },
+    
+    /** Рисует залитый триугольник по трем точкам
+     * @param  {number} x1 - X 1 точки
+     * @param  {number} y1 - Y 1 точки
+     * @param  {number} x2 - X 2 точки
+     * @param  {number} y2 - Y 2 точки
+     * @param  {number} x3 - X 3 точки
+     * @param  {number} y3 - Y 3 точки
+     */
+    fillTriangle(x1, y1, x2, y2, x3, y3) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(x1, y1);
+        this.ctx.lineTo(x2, y2);
+        this.ctx.lineTo(x3, y3);
+        this.ctx.lineTo(x1, y1);
+        this.ctx.closePath();
+        this.ctx.fill();
+
+        return this;
+    },
+    
+    /** Рисует n-угольник по точкам
+     * @param  {array} array - Двумерный массив точек ([[x,y],[x1,y1],...])
+     */
+    drawNangle(array) {
+        if(!(array && array.length)) {
+            console.warn("Аргументом оператора drawNangle должен быть двумерный массив!");
+            return this;
         }
+
+        this.ctx.beginPath();
+        for (let i = 0; i < array.length; i++) {
+            if (i == 0) this.ctx.moveTo(array[i][0], array[i][1]);
+            else this.ctx.lineTo(array[i][0], array[i][1]);
+        }
+        this.ctx.lineTo(array[0][0], array[0][0]);
+        this.ctx.closePath();
         this.ctx.stroke();
         return this;
     },
 
-    fillTriangle(x, y, x1, y1, x2, y2) {
-        const arr = [
-            [x, y],
-            [x1, y1],
-            [x2, y2]
-        ];
-        this.ctx.beginPath();
-        for (let i = 0; i < arr.length; i++) {
-            if (i == 0) this.ctx.moveTo(arr[i][0], arr[i][1]);
-            else this.ctx.lineTo(arr[i][0], arr[i][1]);
+    /** Рисует залитый n-угольник по точкам
+     * @param  {array} array - Двумерный массив точек ([[x,y],[x1,y1],...])
+     */
+    fillNangle(array) {
+        if(!(array && array.length)) {
+            console.warn("Аргументом оператора fillNangle должен быть двумерный массив!");
+            return this;
         }
+
+        this.ctx.beginPath();
+        for (let i = 0; i < array.length; i++) {
+            if (i == 0) this.ctx.moveTo(array[i][0], array[i][1]);
+            else this.ctx.lineTo(array[i][0], array[i][1]);
+        }
+        this.ctx.lineTo(array[0][0], array[0][0]);
+        this.ctx.closePath();
         this.ctx.fill();
         return this;
     },
@@ -264,9 +362,21 @@ const JsMB = {
         this.ctx.stroke();
         return this;
     },
-
+    
+    /**
+     * @param  {string} text - Текст для отображения
+     * @param  {number} x - X
+     * @param  {number} y - Y
+     */
     drawString(text, x, y) {
         this.ctx.fillText(text, x, y);
+        return this;
+    },
+    
+    /** В некоторых реализациях JsMB используется двойная буфферизация
+     * repaint производит отрисовку на экран ранее произведенных действий
+     */
+    repaint() {
         return this;
     },
 
@@ -677,16 +787,16 @@ const JsMB = {
     //Получение значений
 
     screenWidth() {
-        if ($JsMobileBasic.graphic) {
-            return $JsMobileBasic.canvas.width;
+        if (this.$JsMobileBasic.graphic || this.$JsMobileBasic.canvas) {
+            return this.$JsMobileBasic.canvas.width;
         } else {
             return window.innerWidth;
         }
     },
 
     screenHeight() {
-        if ($JsMobileBasic.graphic) {
-            return $JsMobileBasic.canvas.height;
+        if (this.$JsMobileBasic.graphic || this.$JsMobileBasic.canvas) {
+            return this.$JsMobileBasic.canvas.height;
         } else {
             return window.innerHeight;
         }
@@ -718,7 +828,7 @@ const JsMB = {
 
     debug(text, style = 'background: black; color: red;') {
         if ($Config.Debug_Mode) {
-            if (!$JsMobileBasic.Mobile)
+            if (!this.$JsMobileBasic.Mobile)
                 console.log('%c ' + text, style);
             else
                 alert(style);
@@ -801,7 +911,7 @@ const JsMB = {
 // ======Прочее======//
 
 JsMB.__preinit();
-if(typeof window !== 'undefined') {
+if(typeof window !== 'undefined' && typeof document !== 'undefined') {
     Object.assign(window, JsMB);
     JsMB.__init({
         canvas: document.getElementById('c'),
@@ -813,7 +923,7 @@ if(typeof module === 'object') module.exports = JsMB;
 
 JsMB.debug('// ======Инициализация завершена======//', 'background:black;color: #00ff00;');
 
-window.addEventListener('load', function () {
+if(typeof window !== 'undefined') window.addEventListener('load', function () {
     JsMB._eventListeners();
     if (typeof Main === "function") Main(); //eslint-disable-line
     else throw new Error("В файле Autorun.bas должен быть хук Main()!");
