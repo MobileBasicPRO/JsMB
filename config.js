@@ -1,8 +1,21 @@
 'use strict';
 
 const $Config = {
-    type: 'graphic', //graphic/console/api
-    canvas_size: ['*','*',false], //[x,y,вместить]
+    type: 'graphics',
+    // Тип приложения (стнд. graphics)
+    // Доступные типы: graphic, console, api
+    
+    canvas_size: ['*','*',false],
+    // Размер полотна [ширина, высота, вместить]
+    // Для использования всего экрана пишите ['*', '*', false]
+
     Debug_Mode: true,
-    name: "Интерпретатор JsMobileBasic"
+    // Режим отладки
+    // Отображение команды debug(). При релизе приложения рекомендуется отключить.
+
+    name: "Интерпретатор JsMobileBasic",
+    // Заголовок окна
+
+    mount_window: true // Отключите, если используете не стандартную реализацию
+    // В положении false добавляет префикс JsMB ко всем операторам (JsMB.cls())
 }
