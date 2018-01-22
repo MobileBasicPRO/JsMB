@@ -160,6 +160,24 @@
 			}
 		},
 
+		/** Переключить полноэкранный режим
+		 * @param  {bool} mode - true - включить, false - отключить
+		 */
+		fullScreen(mode) {
+			if (this.$NW) {
+				if (mode) {
+					const tmp = this.$NW.Window.get();
+					tmp.enterFullscreen();
+				} else {
+					const tmp = this.$NW.Window.get();
+					tmp.leaveFullscreen();
+				}
+			} else {
+				this.debug("Работа с интерфейсом невозможна!");
+				return false;
+			}
+		},
+
 	}
 
 	console.log($Interface);
@@ -167,7 +185,7 @@
 	if (typeof require === "function") { //JsMB
 		try {
 			$Interface.$NW = require('nw.gui');
-		}catch(e) {
+		} catch (e) {
 			throw new Error("Your system doesn't support native interface");
 		}
 	} else if (typeof localStorage !== "undefined") { //Browser
@@ -183,5 +201,5 @@
 
 	Object.assign(JsMB, $Interface);
 	Object.assign(window, $Interface);
-// })();
+	// })();
 }

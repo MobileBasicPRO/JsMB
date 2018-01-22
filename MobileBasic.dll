@@ -26,9 +26,6 @@ const JsMB = {
         size: '10'
     },
     $Element: {},
-    $Menu: {
-        $Bar: {}
-    },
     $JsMobileBasic: {
         name: 'JsMobileBasic',
         version: 'Alpha 11',
@@ -37,7 +34,12 @@ const JsMB = {
         Mobile: $Config.Mobile,
         Debug: true,
         canvas: typeof document !== 'undefined' ? document.getElementById('c') : null,
-        graphic: false
+        graphics: false,
+        supports: {
+            document: typeof document !== 'undefined',
+            window: typeof window !== 'undefined',
+            ls: typeof localStorage !== 'undefined'
+        }
     },
 
     PI: Math.PI,
@@ -45,25 +47,19 @@ const JsMB = {
     RAD2DEG: 180 / this.PI,
     DEG2RAD: this.PI / 180,
 
-    __preinit(){
-        for(const i in this) {
-            if(typeof this[i] === 'function') this[i] = this[i].bind(this);
+    __preinit() {
+        for (const i in this) {
+            if (typeof this[i] === 'function') this[i] = this[i].bind(this);
         }
     },
 
-    __init({canvas, div}) {
+    __init({
+        canvas,
+        div
+    }) {
         if (typeof require !== "function") window.require = () => console.warn("Использование системных функций не поддерживается на Вашей платформе");
 
-        this.$NW = {};
-        this.$Path = {};
-        this.$Proc = {};
-        if (typeof require === "function") {
-            try {
-                this.$NW = require("nw.gui");
-            }catch(e){
-                this.$NW = null; 
-            }
-        } else this.$NW = null;
+        const supports = this.$JsMobileBasic.supports;
 
         this.debug('#===== Включён режим отладки =====#', 'color:gray;');
         this.debug(this.$JsMobileBasic.name, 'background:gray;color:yellow;');
@@ -74,12 +70,13 @@ const JsMB = {
         // ======Инициализация рабочей среды======//
         this.debug('// ======Инициализация рабочей среды======//', 'color:gray;');
         // Чтение конфига
-        if (typeof $Config == "undefined") {
+        if (typeof $Config === "undefined") {
             console.error('Не найден файл конфигурации!');
         }
 
-        if ($Config.type == 'graphic') {
-            this.$JsMobileBasic.graphic = true;
+        if ($Config.type === 'graphics') {
+
+            this.$JsMobileBasic.graphics = true;
             this.debug('Используется графика!', 'background:black;color:yellow;');
 
             this.$JsMobileBasic.$style = document.createElement('style');
@@ -89,11 +86,9 @@ const JsMB = {
             this.c = canvas;
             //    this.$JsMobileBasic.canvas = this.c;
             this.ctx = this.c.getContext("2d");
-            if ($Config.canvas_size[0] == '*' && $Config.canvas_size[1] == '*') {
+            if ($Config.canvas_size[0] === '*' && $Config.canvas_size[1] === '*') {
                 this.debug('Canvas растянут на весь экран', 'background:black;color:#00ff00;');
-                if (!this.$JsMobileBasic.Mobile) {
-                    $Config.canvas_size[2] ? this.debug('Вмещение включено') : this.debug('Вмещение выключено');
-                }
+                $Config.canvas_size[2] ? this.debug('Вмещение включено') : this.debug('Вмещение выключено');
                 this.c.height = window.innerHeight;
                 this.c.width = window.innerWidth;
                 if ($Config.canvas_size[2]) {
@@ -106,20 +101,22 @@ const JsMB = {
             }
         } else {
             this.debug('Графика не используется!', 'background:black;color:yellow;');
-            this.c = typeof window !== 'undefined' ? window : null;
+            this.c = supports.window ? window : null;
             this.ctx = false;
-            if (typeof document !== 'undefined' && document.getElementById('c') !== undefined)          document.body.removeChild(document.getElementById('c'));
+            if (supports.document && document.getElementById('c'))
+                document.body.removeChild(document.getElementById('c'));
         }
 
-        if (typeof document !== 'undefined') document.getElementsByTagName('title')[0].innerHTML = $Config.name;
+        if (supports.document) document.getElementsByTagName('title')[0].innerHTML = $Config.name;
+
         this.debug('Имя проекта: ' + $Config.name, 'background:brown;color:yellow;');
 
-        this.$Player = [typeof document !== 'undefined' ? document.getElementById("player0") : {}];
+        this.$Player = [supports.document ? document.getElementById("player0") : null];
 
         this.debug('// ======Инициализация интерпретатора======//', 'color:gray;');
 
     },
-    
+
     /** Задать текущий цвет
      * @param  {string} color - Свет в CSS формате
      */
@@ -128,7 +125,7 @@ const JsMB = {
         this.ctx.strokeStyle = color;
         return this;
     },
-    
+
     /** Задать толщину линий
      * @param  {number} width - Толщина
      */
@@ -136,7 +133,7 @@ const JsMB = {
         this.ctx.lineWidth = width;
         return this;
     },
-    
+
     /** Рисует залитый прямоугольник
      * @param  {number} x - Координата X левого верхнего угла
      * @param  {number} y - Координата Y левого верхнего угла
@@ -147,7 +144,23 @@ const JsMB = {
         this.ctx.fillRect(x, y, w, h);
         return this;
     },
-    
+
+    /** Переключить полноэкранный режим
+     * @param  {bool} mode - true - включить, false - отключить
+     */
+    fullScreen(mode) {
+        if (this.$JsMobileBasic.supports.document) {
+            if (mode) {
+                document.documentElement.requestFullScreen();
+            } else {
+                document.cancelFullScreen();
+            }
+        } else {
+            this.debug("Работа в полноэкранном режиме невозможна!");
+            return false;
+        }
+    },
+
     /** Очищает экран
      */
     cls() {
@@ -155,7 +168,7 @@ const JsMB = {
         document.getElementById('p').innerHTML = '';
         return this;
     },
-    
+
     /** Заливает экран выбранным цветом
      * @param  {string} color - Цвет в CSS формате
      */
@@ -166,7 +179,7 @@ const JsMB = {
         this.ctx.restore();
         return this;
     },
-    
+
     /** Рисует прямоугольник
      * @param  {number} x - Координата X левого верхнего угла
      * @param  {number} y - Координата Y левого верхнего угла
@@ -177,7 +190,7 @@ const JsMB = {
         this.ctx.strokeRect(x, y, w, h);
         return this;
     },
-    
+
     /** Рисует точку по координатам (заливает пиксель)
      * @param  {number} x - X координата точки
      * @param  {number} y - Y координата точки
@@ -186,7 +199,7 @@ const JsMB = {
         this.fillRect(x, y, 1, 1);
         return this;
     },
-    
+
     /** Очищяет прямоугольную область
      * @param  {number} x - Координата X левого верхнего угла
      * @param  {number} y - Координата Y левого верхнего угла
@@ -197,7 +210,7 @@ const JsMB = {
         this.ctx.clearRect(x, y, x1, y1);
         return this;
     },
-    
+
     /** Рисует линию по 2 точкам
      * @param  {number} x1 - X 1 точки
      * @param  {number} y1 - Y 1 точки
@@ -211,7 +224,7 @@ const JsMB = {
         this.ctx.stroke();
         return this;
     },
-    
+
     /** Рисует проекцию паралелепипеда (через 2 соединенных прямоугольника)
      * @param  {number} x - XY левого верхнего угла
      * @param  {number} y - XY левого верхнего угла
@@ -246,7 +259,7 @@ const JsMB = {
         this.ctx.stroke();
         return this;
     },
-    
+
     /** Рисует залитую окружность
      * @param  {number} x - X центра
      * @param  {number} y - Y центра
@@ -311,7 +324,7 @@ const JsMB = {
 
         return this;
     },
-    
+
     /** Рисует залитый триугольник по трем точкам
      * @param  {number} x1 - X 1 точки
      * @param  {number} y1 - Y 1 точки
@@ -331,12 +344,12 @@ const JsMB = {
 
         return this;
     },
-    
+
     /** Рисует n-угольник по точкам
      * @param  {array} array - Двумерный массив точек ([[x,y],[x1,y1],...])
      */
     drawNangle(array) {
-        if(!(array && array.length)) {
+        if (!(array && array.length)) {
             console.warn("Аргументом оператора drawNangle должен быть двумерный массив!");
             return this;
         }
@@ -356,7 +369,7 @@ const JsMB = {
      * @param  {array} array - Двумерный массив точек ([[x,y],[x1,y1],...])
      */
     fillNangle(array) {
-        if(!(array && array.length)) {
+        if (!(array && array.length)) {
             console.warn("Аргументом оператора fillNangle должен быть двумерный массив!");
             return this;
         }
@@ -391,7 +404,7 @@ const JsMB = {
 
         return this;
     },
-    
+
     /**
      * @param  {string} text - Текст для отображения
      * @param  {number} x - X
@@ -401,7 +414,7 @@ const JsMB = {
         this.ctx.fillText(text, x, y);
         return this;
     },
-    
+
     /** В некоторых реализациях JsMB используется двойная буфферизация
      * repaint производит отрисовку на экран ранее произведенных действий
      * В стандартной реализации ничего не делает
@@ -409,7 +422,7 @@ const JsMB = {
     repaint() {
         return this;
     },
-    
+
     /** Задать размер шрифта
      * @param  {number} size - Размер
      */
@@ -418,7 +431,7 @@ const JsMB = {
         this.$Font.size = size;
         return this;
     },
-    
+
     /** Задать шрифт
      * @param  {string} family - Шрифт
      */
@@ -427,7 +440,7 @@ const JsMB = {
         this.$Font.family = family;
         return this;
     },
-    
+
     /** Создает линейный градиент
      * @param  {number} x - X координата левого верхнего угла
      * @param  {number} y - Y координата левого верхнего угла
@@ -449,7 +462,7 @@ const JsMB = {
     makeRadialGradient(x, y, r, x1, y1, r1) {
         return this.ctx.createRadialGradient(x, y, r, x1, y1, r1);
     },
-    
+
     /** Задать цвет градиенту
      * @param  {gradient} g - Градиент
      * @param  {number} pos - Позиция (0 - 1)
@@ -461,7 +474,7 @@ const JsMB = {
     },
 
     //Конвертеры
-    
+
     /** Цвет в rgb
      * @param  {number} red=0 - Значение красного цвета (0 - 255)
      * @param  {number} green=0 - Значение зеленого цвета (0 - 255)
@@ -484,7 +497,7 @@ const JsMB = {
     },
 
     //Гели/спрайты
-    
+
     /** Загрузить гель в память
      * @param  {string} file - Файл (./,http,...)
      * @param  {string} name - Имя геля
@@ -494,7 +507,7 @@ const JsMB = {
         this.$Gel[name].src = file;
         return this;
     },
-    
+
     /** [НЕ РЕАЛИЗОВАНО]
      * Переводит гель в спрайт
      * @param  {string} sprite - Имя спрайта
@@ -504,7 +517,7 @@ const JsMB = {
         console.warn('Внимание! Оператор spriteGel не работает!');
         return this;
     },
-    
+
     /** Рисует гель по указанным координатам
      * @param  {string} name - Имя геля
      * @param  {number} x - X координата левого верхнего угла
@@ -518,7 +531,7 @@ const JsMB = {
         }
         return this;
     },
-    
+
     /** [НЕ РЕАЛИЗОВАНО]
      * Рисует спрайт по указанным координатам
      * @param  {string} name - Имя спрайта
@@ -529,7 +542,7 @@ const JsMB = {
         console.warn('Внимание! Оператор drawSprite не работает!');
         return false;
     },
-    
+
     /** Задать размеры гелю (деформация)
      * @param  {string} name - Название геля
      * @param  {number} w - Ширина
@@ -541,7 +554,7 @@ const JsMB = {
         this.$Gel[name].h = h;
         return this;
     },
-    
+
     /** Рисует фрагмент геля
      * @param  {string} name - Имя геля
      * @param  {number} fx - Координаты левого верхнего угла области
@@ -557,7 +570,7 @@ const JsMB = {
         this.ctx.drawImage(this.$Gel[name], fx, fy, fw, fh, x, y, w, h);
         return this;
     },
-    
+
     /** Создает текстуру из геля
      * @param  {string} gelname - Имя геля
      * @param  {string} repeat='repeat' - Повторение (repeat/no-repeat)
@@ -568,7 +581,7 @@ const JsMB = {
 
 
     //Ввод
-    
+
     /** Окно ввода данных
      * @param  {string} text - Текст заголовка окна
      * @param  {string} [def] - Текст по умолчанию
@@ -590,13 +603,17 @@ const JsMB = {
     },
 
     //Звук
-    
+
     /** Играть звук
      * @param  {string} file - Файл звука 
      * @param  {bool} loop - Зациклить?
      * @param  {string} channel=0 - Канал
      */
     playSound(file, loop = false, channel = 0) {
+        if (!this.$Player[0]) {
+            console.warn("На вашей платформе не поддерживается воспроизведение звука!");
+            return this;
+        }
         if (this.$Player[channel] === undefined) {
             const p = document.createElement('audio');
             p.id = "player" + channel;
@@ -606,15 +623,16 @@ const JsMB = {
         this.$Player[channel].setAttribute("src", file);
 
         this.$Player[channel].setAttribute('loop', Number(loop));
-        
+
         this.$Player[channel].play();
         return this;
     },
-    
+
     /** Приостановить воспроизведение звука на канале
      * @param  {number} channel=-1 - Канал (-1 для остановки на всех каналах)
      */
     pauseSound(channel = -1) {
+        if (!this.$Player[0]) return this;
         if (channel == -1) {
             for (const i in this.$Player) {
                 this.$Player[i].pause();
@@ -635,7 +653,7 @@ const JsMB = {
      * @param  {number} number - Число
      */
     sqrt: Math.sqrt,
-    
+
     /** Возвращает случайное число
      * @param  {number} min - От
      * @param  {number} max - До
@@ -676,7 +694,7 @@ const JsMB = {
      * @param  {number} angle - Угол в радианах
      */
     atan: Math.atan,
-    
+
     /** Возвращает остаток от деления 2-х чисел
      * @param  {number} x - Делимое
      * @param  {number} y - Делитель
@@ -703,7 +721,7 @@ const JsMB = {
      * @param  {number} power - Степень
      */
     exp: Math.exp,
-    
+
     /** Возвращает ограниченное значение переменной
      * @param  {number} variable - Начальное значение
      * @param  {number} min - Минимум (нижняя граница)
@@ -718,7 +736,7 @@ const JsMB = {
     /** Возвращает максимальное значение из аргументов
      */
     max: Math.max,
-    
+
     /** Переводит градусы в радианы
      * @param  {number} deg - Значение в градусах
      */
@@ -735,7 +753,7 @@ const JsMB = {
 
     //Строковые функции
 
-    
+
     /** Возвращает длину строки/массива
      * @param  {string} str - Строка/массив
      */
@@ -766,29 +784,29 @@ const JsMB = {
      * @param  {string} str - Строка
      */
     upper: (str) => str.toUpperCase(),
-    
+
     /** Приводит все символы строки в нижний регистр
      * @param  {string} str - Строка
      */
     lower: (str) => str.toLowerCase(),
-    
+
     /** Возвращает часть строки
      * @param  {string} str - Строка
      * @param  {number} pos - Начало выделения
      * @param  {number} len - Длина выделения
      */
     mid: (str, pos, len) => str.substr(pos, len),
-    
+
     /** Возвращает символ по его коду. Можно передать несколько кодов
      * @param  {number} code - Код(ы) символа
      */
     chr: String.fromCharCode, //code to string
-    
+
     /** Возвращает код символа
      * @param  {string} str - Строка
      * @param  {number} [pos=0] - Позиция символа в строке
      */
-    asc: (str, pos=0) => str.charCodeAt(pos), //string to code
+    asc: (str, pos = 0) => str.charCodeAt(pos), //string to code
 
     /** Разбивает строку и возвращает массив частей
      * @param  {string} str - Строка
@@ -802,10 +820,10 @@ const JsMB = {
      * @param  {string} to - На что менять
      * @param  {bool} [all=false] - Заменять все включения
      */
-    replace: (str, reg, to, all=false) => all ? str.replace(new RegExp(reg, 'g')) : str.replace(reg, to),
+    replace: (str, reg, to, all = false) => all ? str.replace(new RegExp(reg, 'g')) : str.replace(reg, to),
 
     //Работа с локальными данными
-    
+
     /** Сохранить данные в хранилище
      * @param  {string} name - Название ячейки
      * @param  {*} _data - Данные
@@ -815,7 +833,7 @@ const JsMB = {
         window.localStorage.setItem(name, data);
         return this;
     },
-    
+
     /** Получить данные из хранилища
      * @param  {string} name - Название ячейки
      */
@@ -826,7 +844,7 @@ const JsMB = {
             return window.localStorage.getItem(name);
         }
     },
-    
+
     /** Возвращает объект из JSON строки
      * @param  {string} json - JSON строка
      */
@@ -837,166 +855,22 @@ const JsMB = {
             return null;
         }
     },
-    
+
     /** Возвращает JSON строку из объекта
      * @param  {object} object - Объект
      * @param  {function} [f=null] - Дополнительный обработчик
      * @param  {number} [s=4] - Отступ
      */
     toJSON: (object, f = null, s = 4) => JSON.stringify(object, f, 4),
-    
+
     /** Возвращает PSON строку из объекта (с функциями)
      * @param  {object} object - Объект
      * @param  {number} [s=4] - Отступ
      */
-    toPSON: (object, s = 4) => JSON.stringify(object, (a,b)=>typeof b==='function'?''+b:b, s),
-
-    //Работа с NW
-
-    //Контекстное меню
-    menuAdd(name, title, onClick, type, fortype) {
-        if (this.$NW) {
-            if (this.$Menu[name] == undefined) {
-                this.$Menu[name] = new this.$NW.Menu();
-            }
-            switch (type) {
-                case undefined:
-                    this.$Menu[name].append(new this.$NW.MenuItem({
-                        label: title,
-                        click: onClick
-                    }));
-                    break;
-                case 'subMenu':
-                    this.$Menu[name].append(new this.$NW.MenuItem({
-                        label: title,
-                        submenu: fortype
-                    }));
-                    break;
-                case 'checkbox':
-                    this.$Menu[name].append(new this.$NW.MenuItem({
-                        label: title,
-                        type: 'checkbox',
-                        click: onClick
-                    }));
-                    break;
-            }
-            return this;
-        } else {
-            this.debug('Создание меню невозможно!');
-            return false;
-        }
-    },
-
-    menuShow(name, x, y) {
-        if (this.$NW) {
-            this.$Menu[name].popup(x, y);
-            return this;
-        } else {
-            this.debug('Отображение меню невозможно!');
-            return false;
-        }
-    },
-
-    menuAddSeparator(name) {
-        if (this.$NW) {
-            if (this.$Menu[name] == undefined) {
-                this.$Menu[name] = new this.$NW.Menu();
-            }
-            this.$Menu[name].append(new this.$NW.MenuItem({
-                type: 'separator'
-            }));
-            return this;
-        } else {
-            this.debug('Создание меню невозможно!');
-            return false;
-        }
-    },
-
-    //Menu bar
-
-    menuBarAdd(name, title, subMenu) {
-        if (this.$NW) {
-            if (this.$Menu.$Bar[name] == undefined) {
-                this.$Menu.$Bar[name] = new this.$NW.Menu({
-                    type: 'menubar',
-                    title: title
-                });
-            }
-            this.$Menu.$Bar[name].append(new this.$NW.MenuItem({
-                label: title,
-                submenu: this.$Menu[subMenu]
-            }));
-            return this;
-        } else {
-            this.debug('Создание меню невозможно!');
-            return false;
-        }
-    },
-
-    menuBarShow(name) {
-        if (this.$NW) {
-            this.$NW.Window.get().menu = this.$Menu.$Bar[name];
-            return this;
-        } else {
-            this.debug('Отображение меню невозможно!');
-            return false;
-        }
-    },
-
-
-    //clipboard
-
-    getClipboard(type = 'text') {
-        if (this.$NW) {
-            const clipboard = this.$NW.Clipboard.get();
-            return clipboard.get(type);
-        } else {
-            this.debug('Работа с буфером обмена невозможна!');
-            return false;
-        }
-    },
-
-    setClipboard(value, type = 'text') {
-        if (this.$NW) {
-            const clipboard = this.$NW.Clipboard.get();
-            clipboard.set(value, type);
-            return this;
-        } else {
-            this.debug('Работа с буфером обмена невозможна!');
-            return false;
-        }
-    },
-
-    clearClipboard() {
-        if (this.$NW) {
-            const clipboard = this.$NW.Clipboard.get();
-            clipboard.clear();
-            return this;
-        } else {
-            this.debug('Работа с буфером обмена невозможна!');
-            return false;
-        }
-    },
-
-    //tray
-
-    menuTrayAdd(name, title, icon, menu) {
-        if (this.$NW) {
-            const tray = new this.$NW.Tray({
-                title: title,
-                icon: icon,
-                alticon: icon
-            });
-            tray.menu = this.$Menu[menu];
-            return this;
-        } else {
-            this.debug('Работа с треем невозможна!');
-            return false;
-        }
-    },
+    toPSON: (object, s = 4) => JSON.stringify(object, (a, b) => typeof b === 'function' ? '' + b : b, s),
 
     //Работа с модулями
-    
+
     /** Подключает модуль/файл
      * @param  {string} file - Имя/адрес файла
      */
@@ -1009,47 +883,52 @@ const JsMB = {
     },
 
     getModuleName(ID) {
+        console.warn('This function is deprecated!');
         return ID.name;
     },
 
     getModuleAuthor(ID) {
+        console.warn('This function is deprecated!');
         return ID.author;
     },
 
     getModuleDescription(ID) {
+        console.warn('This function is deprecated!');
         return ID.description;
     },
 
     getModuleUrl(ID) {
+        console.warn('This function is deprecated!');
         return ID.url;
     },
 
     getModuleVersion(ID) {
+        console.warn('This function is deprecated!');
         return ID.version;
     },
 
     //Получение значений
-    
+
     /** Возвращает ширину экрана
      */
     screenWidth() {
-        if (this.$JsMobileBasic.graphic || this.$JsMobileBasic.canvas) {
+        if (this.$JsMobileBasic.graphics || this.$JsMobileBasic.canvas) {
             return this.$JsMobileBasic.canvas.width;
         } else {
             return window.innerWidth;
         }
     },
-    
+
     /** Возвращает высоту экрана
      */
     screenHeight() {
-        if (this.$JsMobileBasic.graphic || this.$JsMobileBasic.canvas) {
+        if (this.$JsMobileBasic.graphics || this.$JsMobileBasic.canvas) {
             return this.$JsMobileBasic.canvas.height;
         } else {
             return window.innerHeight;
         }
     },
-    
+
     /** Возвращает X координату мыши в данный момент
      */
     getMouseX() {
@@ -1076,7 +955,7 @@ const JsMB = {
 
 
     //Техническое
-    
+
     /** Логирование
      * @param  {*} - Данные
      */
@@ -1084,7 +963,7 @@ const JsMB = {
         console.log(...text);
         return this;
     },
-    
+
     /** Вывести сообщение для отладки
      * @param  {string} text - Сообщение
      * @param  {string} [style] - Оформление сообщения (CSS)
@@ -1100,30 +979,12 @@ const JsMB = {
             next: this.debug
         };
     },
-    
+
     /** Закрыть программу
      */
     exit() {
         window.close();
         return this;
-    },
-
-    /** Переключить полноэкранный режим
-     * @param  {bool} mode - true - включить, false - отключить
-     */
-    fullScreen(mode) {
-        if (this.$NW) {
-            if (mode) {
-                const tmp = this.$NW.Window.get();
-                tmp.enterFullscreen();
-            } else {
-                const tmp = this.$NW.Window.get();
-                tmp.leaveFullscreen();
-            }
-        } else {
-            this.debug("Работа с интерфейсом невозможна!");
-            return false;
-        }
     },
 
     addElement(name, type) {
@@ -1179,7 +1040,7 @@ const JsMB = {
 // ======Прочее======//
 
 JsMB.__preinit();
-if(typeof window !== 'undefined' && typeof document !== 'undefined') {
+if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     Object.assign(window, JsMB);
     JsMB.__init({
         canvas: document.getElementById('c'),
@@ -1187,11 +1048,11 @@ if(typeof window !== 'undefined' && typeof document !== 'undefined') {
     });
 }
 
-if(typeof module === 'object') module.exports = JsMB;
+if (typeof module === 'object') module.exports = JsMB;
 
 JsMB.debug('// ======Инициализация завершена======//', 'background:black;color: #00ff00;');
 
-if(typeof window !== 'undefined') window.addEventListener('load', function () {
+if (typeof window !== 'undefined') window.addEventListener('load', function () {
     JsMB._eventListeners();
     if (typeof Main === "function") Main(); //eslint-disable-line
     else throw new Error("В файле Autorun.bas должен быть хук Main()!");
