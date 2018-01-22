@@ -1,0 +1,187 @@
+/* 
+ * Process module for JsMobileBasic.
+ * Help: https://vk.com/page-123026568_53604956
+ * Author: PROPHESSOR
+ * Supports:
+ *  JsMB-interpreter & nw.js nw.gui [+]
+ *  Node [-]
+ *  JsOS [-]
+ *  Browser pseudo-fs [-]
+ */
+
+'use strict';
+
+// (function () {
+{
+	const $Interface = {
+		$Menu: {
+			$Bar: {}
+		},
+
+		//Контекстное меню
+		menuAdd(name, title, onClick, type, fortype) {
+			if (this.$NW) {
+				if (this.$Menu[name] == undefined) {
+					this.$Menu[name] = new this.$NW.Menu();
+				}
+				switch (type) {
+					case undefined:
+						this.$Menu[name].append(new this.$NW.MenuItem({
+							label: title,
+							click: onClick
+						}));
+						break;
+					case 'subMenu':
+						this.$Menu[name].append(new this.$NW.MenuItem({
+							label: title,
+							submenu: fortype
+						}));
+						break;
+					case 'checkbox':
+						this.$Menu[name].append(new this.$NW.MenuItem({
+							label: title,
+							type: 'checkbox',
+							click: onClick
+						}));
+						break;
+				}
+				return this;
+			} else {
+				this.debug('Создание меню невозможно!');
+				return false;
+			}
+		},
+
+		menuShow(name, x, y) {
+			if (this.$NW) {
+				this.$Menu[name].popup(x, y);
+				return this;
+			} else {
+				this.debug('Отображение меню невозможно!');
+				return false;
+			}
+		},
+
+		menuAddSeparator(name) {
+			if (this.$NW) {
+				if (this.$Menu[name] == undefined) {
+					this.$Menu[name] = new this.$NW.Menu();
+				}
+				this.$Menu[name].append(new this.$NW.MenuItem({
+					type: 'separator'
+				}));
+				return this;
+			} else {
+				this.debug('Создание меню невозможно!');
+				return false;
+			}
+		},
+
+		//Menu bar
+
+		menuBarAdd(name, title, subMenu) {
+			if (this.$NW) {
+				if (this.$Menu.$Bar[name] == undefined) {
+					this.$Menu.$Bar[name] = new this.$NW.Menu({
+						type: 'menubar',
+						title: title
+					});
+				}
+				this.$Menu.$Bar[name].append(new this.$NW.MenuItem({
+					label: title,
+					submenu: this.$Menu[subMenu]
+				}));
+				return this;
+			} else {
+				this.debug('Создание меню невозможно!');
+				return false;
+			}
+		},
+
+		menuBarShow(name) {
+			if (this.$NW) {
+				this.$NW.Window.get().menu = this.$Menu.$Bar[name];
+				return this;
+			} else {
+				this.debug('Отображение меню невозможно!');
+				return false;
+			}
+		},
+
+
+		//clipboard
+
+		getClipboard(type = 'text') {
+			if (this.$NW) {
+				const clipboard = this.$NW.Clipboard.get();
+				return clipboard.get(type);
+			} else {
+				this.debug('Работа с буфером обмена невозможна!');
+				return false;
+			}
+		},
+
+		setClipboard(value, type = 'text') {
+			if (this.$NW) {
+				const clipboard = this.$NW.Clipboard.get();
+				clipboard.set(value, type);
+				return this;
+			} else {
+				this.debug('Работа с буфером обмена невозможна!');
+				return false;
+			}
+		},
+
+		clearClipboard() {
+			if (this.$NW) {
+				const clipboard = this.$NW.Clipboard.get();
+				clipboard.clear();
+				return this;
+			} else {
+				this.debug('Работа с буфером обмена невозможна!');
+				return false;
+			}
+		},
+
+		//tray
+
+		menuTrayAdd(name, title, icon, menu) {
+			if (this.$NW) {
+				const tray = new this.$NW.Tray({
+					title: title,
+					icon: icon,
+					alticon: icon
+				});
+				tray.menu = this.$Menu[menu];
+				return this;
+			} else {
+				this.debug('Работа с треем невозможна!');
+				return false;
+			}
+		},
+
+	}
+
+	console.log($Interface);
+
+	if (typeof require === "function") { //JsMB
+		try {
+			$Interface.$NW = require('nw.gui');
+		}catch(e) {
+			throw new Error("Your system doesn't support native interface");
+		}
+	} else if (typeof localStorage !== "undefined") { //Browser
+		//TODO: Add browser support
+		throw new Error("The browser doesn't support native interface!");
+	} else {
+		throw new Error("Your system doesn't support native interface");
+	}
+
+	for (const i in $Interface) {
+		if (typeof $Interface[i] === 'function') $Interface[i] = $Interface[i].bind(this);
+	}
+
+	Object.assign(JsMB, $Interface);
+	Object.assign(window, $Interface);
+// })();
+}

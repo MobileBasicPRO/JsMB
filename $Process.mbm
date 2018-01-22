@@ -32,13 +32,13 @@
 		//TODO: Add browser support
 		throw new Error("The browser doesn't support processes!");
 	} else {
-		throw new Error("Your system doesn't support FileSystem");
+		throw new Error("Your system doesn't support processes");
 	}
 
 	for(const i in $Process) {
 		if(typeof $Process[i] === 'function') $Process[i] = $Process[i].bind(this);
 	}
 
-	Object.apply(JsMB, $Process);
-	Object.apply(window, $Process);
+	Object.assign(JsMB, $Process);
+	Object.assign(window, $Process);
 })();
