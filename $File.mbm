@@ -19,6 +19,7 @@
  *  JsOS
  * @module $File
  * @author PROPHESSOR
+ * @namespace $File
  */
 {
     const $File = {

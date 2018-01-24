@@ -14,6 +14,8 @@
 /** Модуль для работы с интерфейсом
  * Поддерживает только JsMB-Interpreter и NW.JS
  * @module $Interface
+ * @author PROPHESOR
+ * @namespace $Interface
  */
 {
     const $Interface = {

@@ -17,19 +17,34 @@
  * Node.JS
  * @module $Process
  * @author PROPHESSOR
+ * @namespace $Process
  */
 {
 
     const $Process = {
+        
+        /** Выполнить команду
+         * @param  {string} target - Команда
+         * @returns {this}
+         */
         exec(target) {
             this.$Proc.execSync(target);
             return this;
         },
-
+        
+        /** Выполнить команду и вернуть результат
+         * @param  {string} target - Команда
+         * @returns {string}
+         */
         execReturn(target) {
             return this.$Proc.execSync(target);
         },
-
+        
+        /** Выполнить файл
+         * @param  {string} file - Файл
+         * @param  {array} [keys=[]] - Массив с ключами
+         * @returns {this}
+         */
         execFile(file, keys = []) {
             try {
                 this.$Proc.execFileSync(file, keys);
@@ -40,6 +55,11 @@
             }
         },
 
+        /** Выполнить файл и вернуть результат
+         * @param  {string} file - Файл
+         * @param  {array} [keys=[]] - Массив с ключами
+         * @returns {this}
+         */
         execFileReturn(file, keys = []) {
             try {
                 return this.$Proc.execFileSync(file, keys);
