@@ -1,7 +1,8 @@
-/* 
+/*
  * Process module for JsMobileBasic.
  * Help: https://vk.com/page-123026568_53604956
  * Supports:
+ * JsMB-Interpreter, NW.JS [+]
  *  Node child_process [+]
  *  JsOS [-]
  *  Browser pseudo-fs [-]
@@ -9,36 +10,60 @@
 
 'use strict';
 
-(function () {
+/** Модуль для работы с процессами
+ * Поддерживает:
+ * JsMB-Interpreter
+ * NW.JS
+ * Node.JS
+ * @module $Process
+ * @author PROPHESSOR
+ */
+{
 
-	const $Process = {
-		exec(target) {
-			this.$Proc.execSync(target);
-			return this;
-		},
+    const $Process = {
+        exec(target) {
+            this.$Proc.execSync(target);
+            return this;
+        },
 
-		execFile(file, keys = []) {
-			try {
-				return this.$Proc.execFileSync(file, keys);
-			} catch (e) {
-				this.debug("Ошибка при работе с процессом: " + e);
-			}
-		}
-	}
+        execReturn(target) {
+            return this.$Proc.execSync(target);
+        },
 
-	if (typeof require === "function") { //JsOS or Node
-		$Process.$Proc = require('child_process');
-	} else if (typeof localStorage !== "undefined") { //Browser
-		//TODO: Add browser support
-		throw new Error("The browser doesn't support processes!");
-	} else {
-		throw new Error("Your system doesn't support processes");
-	}
+        execFile(file, keys = []) {
+            try {
+                this.$Proc.execFileSync(file, keys);
+                return this;
+            } catch (e) {
+                this.debug('Ошибка при работе с процессом: ' + e);
+                return false;
+            }
+        },
 
-	for(const i in $Process) {
-		if(typeof $Process[i] === 'function') $Process[i] = $Process[i].bind(this);
-	}
+        execFileReturn(file, keys = []) {
+            try {
+                return this.$Proc.execFileSync(file, keys);
+            } catch (e) {
+                this.debug('Ошибка при работе с процессом: ' + e);
+                return false;
+            }
+        }
+    };
 
-	Object.assign(JsMB, $Process);
-	Object.assign(window, $Process);
-})();
+    if (typeof require === 'function') { // JsOS or Node
+        $Process.$Proc = require('child_process');
+    } else if (typeof localStorage !== "undefined") { // eslint-disable-line
+        // Browser
+        // TODO: Add browser support
+        throw new Error('The browser doesn\'t support processes!');
+    } else {
+        throw new Error('Your system doesn\'t support processes');
+    }
+
+    for (const i in $Process) {
+        if (typeof $Process[i] === 'function') $Process[i] = $Process[i].bind(JsMB);
+    }
+
+    Object.assign(JsMB, $Process);
+    Object.assign(window, $Process);
+}

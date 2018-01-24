@@ -40,9 +40,20 @@ const JsMB = {
         }
     },
 
+    /** Число PI до 15 знака (3.1415....)
+     */
     'PI': Math.PI,
+
+    /** Число G (9.8)
+     */
     'G': 9.8,
+
+    /** Преобразование радиан в градусы (180 / PI)
+     */
     'RAD2DEG': 180 / Math.PI,
+
+    /** Преобразование градусов в радиан (PI / 180)
+     */
     'DEG2RAD': Math.PI / 180,
 
     __preinit() {
@@ -688,8 +699,9 @@ const JsMB = {
 
     /** Возвращает квадратный корень из числа
      * @param  {number} number - Число
+     * @returns {number}
      */
-    'sqrt': Math.sqrt,
+    'sqrt': number => Math.sqrt(number),
 
     /** Возвращает случайное число
      * @param  {number} min - От
@@ -702,19 +714,19 @@ const JsMB = {
      * @param  {number} angle - Угол в радианах
      * @returns {number}
      */
-    'sin': Math.sin,
+    'sin': angle => Math.sin(angle),
 
     /** Возвращает косинус угла
      * @param  {number} angle - Угол в радианах
      * @returns {number}
      */
-    'cos': Math.cos,
+    'cos': angle => Math.cos(angle),
 
     /** Возвращает тангенс угла
      * @param  {number} angle - Угол в радианах
      * @returns {number}
      */
-    'tan': Math.tan,
+    'tan': angle => Math.tan(angle),
 
     /** Возвращает котангенс угла
      * @param  {number} angle - Угол в радианах
@@ -723,22 +735,22 @@ const JsMB = {
     'ctg': angle => 1 / Math.tan(angle),
 
     /** Возвращает арксинус угла (в радианах)
-     * @param  {number} angle - Угол в радианах
+     * @param  {number} number - Угол в радианах
      * @returns {number}
      */
-    'asin': Math.asin,
+    'asin': number => Math.asin(number),
 
     /** Возвращает арккосинус угла (в радианах)
-     * @param  {number} angle - Угол в радианах
+     * @param  {number} number - Угол в радианах
      * @returns {number}
      */
-    'acos': Math.acos,
+    'acos': number => Math.acos(number),
 
     /** Возвращает арктангенс угла (в радианах)
-     * @param  {number} angle - Угол в радианах
+     * @param  {number} number - Угол в радианах
      * @returns {number}
      */
-    'atan': Math.atan,
+    'atan': number => Math.atan(number),
 
     /** Возвращает остаток от деления 2-х чисел
      * @param  {number} x - Делимое
@@ -751,26 +763,26 @@ const JsMB = {
      * @param  {number} number - Число
      * @returns {number}
      */
-    'abs': Math.abs,
+    'abs': number => Math.abs(number),
 
     /** Возводит число в степень
      * @param  {number} number - Число
      * @param  {number} power - Степень
      * @returns {number}
      */
-    'pow': Math.pow,
+    'pow': (number, power) => Math.pow(number, power),
 
     /** Возвращает натуральный логарифм от числа
      * @param  {number} number - Число
      * @returns {number}
      */
-    'ln': Math.log,
+    'ln': number => Math.log(number),
 
     /** Возвращает число e в степени
      * @param  {number} power - Степень
      * @returns {number}
      */
-    'exp': Math.exp,
+    'exp': power => Math.exp(power),
 
     /** Возвращает ограниченное значение переменной
      * @param  {number} variable - Начальное значение
@@ -785,16 +797,16 @@ const JsMB = {
     /** Возвращает минимальное значение из аргументов
      * @returns {number}
      */
-    'min': Math.min,
+    'min': (...a) => Math.min(...a),
 
     /** Возвращает максимальное значение из аргументов
      * @returns {number}
      */
-    'max': Math.max,
+    'max': (...a) => Math.max(...a),
 
     /** Переводит градусы в радианы
      * @param  {number} deg - Значение в градусах
-     * @return {number} Радианы
+     * @returns {number} Радианы
      */
     rad(deg) {
         if (deg === 90) return this.PI / 2;
@@ -815,7 +827,7 @@ const JsMB = {
 
     /** Возвращает длину строки/массива
      * @param  {string} str - Строка/массив
-     * @return {number}
+     * @returns {number}
      */
     'len': str => str.length,
 
@@ -827,7 +839,7 @@ const JsMB = {
 
     /** Переводит строку в число (или возвращает NaN, если это невозможно)
      * @param  {string} str - Строка с числом
-     * @return {number}
+     * @returns {number}
      */
     'val': str => Number(str),
 
@@ -835,7 +847,7 @@ const JsMB = {
      * Лучше использовать val
      * @param  {string} str - Строка с числом
      * @param  {number} [system=10] - Система исчисления
-     * @return {number} Int
+     * @returns {number} Int
      */
     int(str, system = 10) {
         return parseInt(str, system);
@@ -843,13 +855,13 @@ const JsMB = {
 
     /** Переводит строку в число с плавающей точкой (или возвращает NaN, если это невозможно)
      * @param  {string} str - Строка с числом
-     * @return {number} Float
+     * @returns {number} Float
      */
     'float': str => parseFloat(str),
 
     /** Приводит все символы строки в ВЕРХНИЙ РЕГИСТР
      * @param  {string} str - Строка
-     * @return {string}
+     * @returns {string}
      */
     'upper': str => str.toUpperCase(),
 
@@ -869,21 +881,21 @@ const JsMB = {
 
     /** Возвращает символ по его коду. Можно передать несколько кодов
      * @param  {number} code - Код(ы) символа
-     * @return {string}
+     * @returns {string}
      */
-    'chr': String.fromCharCode, // code to string
+    'chr': (...codes) => String.fromCharCode(...codes), // code to string
 
     /** Возвращает код символа
      * @param  {string} str - Строка
      * @param  {number} [pos=0] - Позиция символа в строке
-     * @return {number}
+     * @returns {number}
      */
     'asc': (str, pos = 0) => str.charCodeAt(pos), // string to code
 
     /** Разбивает строку и возвращает массив частей
      * @param  {string} str - Строка
      * @param  {string} char - Символ/регулярное выражение, по которому разбивать
-     * @return {array}
+     * @returns {array}
      */
     'split': (str, char) => str.split(char),
 
@@ -892,7 +904,7 @@ const JsMB = {
      * @param  {string} reg - Строка/регулярное выражение для замены
      * @param  {string} to - На что менять
      * @param  {bool} [all=false] - Заменять все включения
-     * @return {string}
+     * @returns {string}
      */
     replace(str, reg, to, all = false) {
         if (all) return str.replace(new RegExp(reg, 'g'));
@@ -927,7 +939,7 @@ const JsMB = {
 
     /** Возвращает объект из JSON строки
      * @param  {string} json - JSON строка
-     * @return {object}
+     * @returns {object}
      */
     'parseJSON': (json) => {
         try {
@@ -948,7 +960,7 @@ const JsMB = {
     /** Возвращает PSON строку из объекта (с функциями)
      * @param  {object} object - Объект
      * @param  {number} [s=4] - Отступ
-     * @return {string}
+     * @returns {string}
      */
     'toPSON': (object, s = 4) => JSON.stringify(object, (a, b) => typeof b === 'function' ? String(b) : b, s), // eslint-disable-line
 

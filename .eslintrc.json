@@ -21,6 +21,7 @@
     },
     "extends": "eslint:recommended",
     "rules": {
+        "no-empty": "off",
         "strict": "off",
         "no-undef": "warn",
         "no-unused-vars": "warn",

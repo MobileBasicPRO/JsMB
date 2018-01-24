@@ -1,4 +1,4 @@
-/* 
+/*
  * Process module for JsMobileBasic.
  * Help: https://vk.com/page-123026568_53604956
  * Author: PROPHESSOR
@@ -11,195 +11,253 @@
 
 'use strict';
 
-// (function () {
+/** Модуль для работы с интерфейсом
+ * Поддерживает только JsMB-Interpreter и NW.JS
+ * @module $Interface
+ */
 {
-	const $Interface = {
-		$Menu: {
-			$Bar: {}
-		},
+    const $Interface = {
+        '$Menu': {'$Bar': {}},
 
-		//Контекстное меню
-		menuAdd(name, title, onClick, type, fortype) {
-			if (this.$NW) {
-				if (this.$Menu[name] == undefined) {
-					this.$Menu[name] = new this.$NW.Menu();
-				}
-				switch (type) {
-					case undefined:
-						this.$Menu[name].append(new this.$NW.MenuItem({
-							label: title,
-							click: onClick
-						}));
-						break;
-					case 'subMenu':
-						this.$Menu[name].append(new this.$NW.MenuItem({
-							label: title,
-							submenu: fortype
-						}));
-						break;
-					case 'checkbox':
-						this.$Menu[name].append(new this.$NW.MenuItem({
-							label: title,
-							type: 'checkbox',
-							click: onClick
-						}));
-						break;
-				}
-				return this;
-			} else {
-				this.debug('Создание меню невозможно!');
-				return false;
-			}
-		},
+        // Контекстное меню
+        /** Добавить пункт в контекстное меню
+         * @param  {string} name - ID название меню
+         * @param  {string} title - Текст пункта меню
+         * @param  {function} onClick - Функция выполнится при нажатии на пункт меню
+         * @param  {string} [type=undefined] - Тип меню (subMenu, checkbox, separator)
+         * @param  {string} [fortype=undefined] - Родительское меню для subMenu
+         * @returns {this}
+         */
+        menuAdd(name, title, onClick, type, fortype) {
+            if (this.$NW) {
+                if (this.$Menu[name] == undefined) {
+                    this.$Menu[name] = new this.$NW.Menu();
+                }
+                switch (type) {
+                    case undefined:
+                        this.$Menu[name].append(new this.$NW.MenuItem({
+                            'label': title,
+                            'click': onClick
+                        }));
+                        break;
+                    case 'subMenu':
+                        this.$Menu[name].append(new this.$NW.MenuItem({
+                            'label': title,
+                            'submenu': fortype
+                        }));
+                        break;
+                    case 'checkbox':
+                        this.$Menu[name].append(new this.$NW.MenuItem({
+                            'label': title,
+                            'type': 'checkbox',
+                            'click': onClick
+                        }));
+                        break;
+                    case 'separator':
+                        this.$Menu[name].append(new this.$NW.MenuItem({'type': 'separator'}));
+                        break;
+                    default:
+                        console.warn('Неверный тип меню!');
+                        break;
+                }
+                return this;
+            }
+                this.debug('Создание меню невозможно!');
+                return false;
 
-		menuShow(name, x, y) {
-			if (this.$NW) {
-				this.$Menu[name].popup(x, y);
-				return this;
-			} else {
-				this.debug('Отображение меню невозможно!');
-				return false;
-			}
-		},
+        },
 
-		menuAddSeparator(name) {
-			if (this.$NW) {
-				if (this.$Menu[name] == undefined) {
-					this.$Menu[name] = new this.$NW.Menu();
-				}
-				this.$Menu[name].append(new this.$NW.MenuItem({
-					type: 'separator'
-				}));
-				return this;
-			} else {
-				this.debug('Создание меню невозможно!');
-				return false;
-			}
-		},
+        /** Отобразить контекстное меню
+         * @param  {string} name - ID название меню
+         * @param  {number} x - XY координата
+         * @param  {number} y - XY координата
+         * @returns {this}
+         */
+        menuShow(name, x, y) {
+            if (this.$NW) {
+                this.$Menu[name].popup(x, y);
+                return this;
+            }
+                this.debug('Отображение меню невозможно!');
+                return false;
 
-		//Menu bar
+        },
 
-		menuBarAdd(name, title, subMenu) {
-			if (this.$NW) {
-				if (this.$Menu.$Bar[name] == undefined) {
-					this.$Menu.$Bar[name] = new this.$NW.Menu({
-						type: 'menubar',
-						title: title
-					});
-				}
-				this.$Menu.$Bar[name].append(new this.$NW.MenuItem({
-					label: title,
-					submenu: this.$Menu[subMenu]
-				}));
-				return this;
-			} else {
-				this.debug('Создание меню невозможно!');
-				return false;
-			}
-		},
+        /** Добавляет разделитель в меню
+         * @param  {string} name - ID название меню
+         * @returns {this}
+         */
+        menuAddSeparator(name) {
+            if (this.$NW) {
+                if (this.$Menu[name] == undefined) {
+                    this.$Menu[name] = new this.$NW.Menu();
+                }
+                this.$Menu[name].append(new this.$NW.MenuItem({'type': 'separator'}));
+                return this;
+            }
+                this.debug('Создание меню невозможно!');
+                return false;
 
-		menuBarShow(name) {
-			if (this.$NW) {
-				this.$NW.Window.get().menu = this.$Menu.$Bar[name];
-				return this;
-			} else {
-				this.debug('Отображение меню невозможно!');
-				return false;
-			}
-		},
+        },
+
+        // Menu bar
+
+        /** Добавляет меню в меню-бар
+         * @param  {string} name - ID название меню-бара
+         * @param  {string} title - Заголовок меню
+         * @param  {string} subMenu - ID название меню
+         * @returns {this}
+         */
+        menuBarAdd(name, title, subMenu) {
+            if (this.$NW) {
+                if (this.$Menu.$Bar[name] == undefined) {
+                    this.$Menu.$Bar[name] = new this.$NW.Menu({
+                        'type': 'menubar',
+                        title
+                    });
+                }
+                this.$Menu.$Bar[name].append(new this.$NW.MenuItem({
+                    'label': title,
+                    'submenu': this.$Menu[subMenu]
+                }));
+                return this;
+            }
+                this.debug('Создание меню невозможно!');
+                return false;
+
+        },
+
+        /** Отобразить меню-бар на экране
+         * @param  {string} name - ID название меню-бара
+         * @returns {this}
+         */
+        menuBarShow(name) {
+            if (this.$NW) {
+                this.$NW.Window.get().menu = this.$Menu.$Bar[name];
+                return this;
+            }
+                this.debug('Отображение меню невозможно!');
+                return false;
+
+        },
 
 
-		//clipboard
+        // clipboard
 
-		getClipboard(type = 'text') {
-			if (this.$NW) {
-				const clipboard = this.$NW.Clipboard.get();
-				return clipboard.get(type);
-			} else {
-				this.debug('Работа с буфером обмена невозможна!');
-				return false;
-			}
-		},
+        /** Получить данные из буфера обмена
+         * @param  {string} [type='text'] - Тип получаемых данных
+         * @returns {string}
+         */
+        getClipboard(type = 'text') {
+            if (this.$NW) {
+                const clipboard = this.$NW.Clipboard.get();
 
-		setClipboard(value, type = 'text') {
-			if (this.$NW) {
-				const clipboard = this.$NW.Clipboard.get();
-				clipboard.set(value, type);
-				return this;
-			} else {
-				this.debug('Работа с буфером обмена невозможна!');
-				return false;
-			}
-		},
+                return clipboard.get(type);
+            }
+                this.debug('Работа с буфером обмена невозможна!');
+                return false;
 
-		clearClipboard() {
-			if (this.$NW) {
-				const clipboard = this.$NW.Clipboard.get();
-				clipboard.clear();
-				return this;
-			} else {
-				this.debug('Работа с буфером обмена невозможна!');
-				return false;
-			}
-		},
+        },
 
-		//tray
+        /** Поместить данные в буфер обмена
+         * @param  {string} value - Данные для помещения
+         * @param  {string} [type='text'] - Тип данных
+         * @returns {this}
+         */
+        setClipboard(value, type = 'text') {
+            if (this.$NW) {
+                const clipboard = this.$NW.Clipboard.get();
 
-		menuTrayAdd(name, title, icon, menu) {
-			if (this.$NW) {
-				const tray = new this.$NW.Tray({
-					title: title,
-					icon: icon,
-					alticon: icon
-				});
-				tray.menu = this.$Menu[menu];
-				return this;
-			} else {
-				this.debug('Работа с треем невозможна!');
-				return false;
-			}
-		},
+                clipboard.set(value, type);
+                return this;
+            }
+                this.debug('Работа с буфером обмена невозможна!');
+                return false;
 
-		/** Переключить полноэкранный режим
-		 * @param  {bool} mode - true - включить, false - отключить
-		 */
-		fullScreen(mode) {
-			if (this.$NW) {
-				if (mode) {
-					const tmp = this.$NW.Window.get();
-					tmp.enterFullscreen();
-				} else {
-					const tmp = this.$NW.Window.get();
-					tmp.leaveFullscreen();
-				}
-			} else {
-				this.debug("Работа с интерфейсом невозможна!");
-				return false;
-			}
-		},
+        },
 
-	}
+        /** Очищает буфер обмена
+         * @returns {this}
+         */
+        clearClipboard() {
+            if (this.$NW) {
+                const clipboard = this.$NW.Clipboard.get();
 
-	console.log($Interface);
+                clipboard.clear();
+                return this;
+            }
+                this.debug('Работа с буфером обмена невозможна!');
+                return false;
 
-	if (typeof require === "function") { //JsMB
-		try {
-			$Interface.$NW = require('nw.gui');
-		} catch (e) {
-			throw new Error("Your system doesn't support native interface");
-		}
-	} else if (typeof localStorage !== "undefined") { //Browser
-		//TODO: Add browser support
-		throw new Error("The browser doesn't support native interface!");
-	} else {
-		throw new Error("Your system doesn't support native interface");
-	}
+        },
 
-	for (const i in $Interface) {
-		if (typeof $Interface[i] === 'function') $Interface[i] = $Interface[i].bind(this);
-	}
+        // tray
 
-	Object.assign(JsMB, $Interface);
-	Object.assign(window, $Interface);
-	// })();
+        /** Добавить пункт в трэй
+         * @param  {string} [name] - ID название трэя
+         * @param  {string} title - Текст при удерживании мыши
+         * @param  {string} icon - Иконка
+         * @param  {string} menu - ID название открывающегося меню
+         * @returns {this}
+         */
+        menuTrayAdd(name, title, icon, menu) {
+            if (this.$NW) {
+                const tray = new this.$NW.Tray({
+                    title,
+                    icon,
+                    'alticon': icon
+                });
+
+                tray.menu = this.$Menu[menu];
+                return this;
+            }
+                this.debug('Работа с треем невозможна!');
+                return false;
+
+        },
+
+        /** Переключить полноэкранный режим
+         * @param  {bool} mode - true - включить, false - отключить
+         * @returns {this}
+         */
+        fullScreen(mode) {
+            if (this.$NW) {
+                if (mode) {
+                    const tmp = this.$NW.Window.get();
+
+                    tmp.enterFullscreen();
+                } else {
+                    const tmp = this.$NW.Window.get();
+
+                    tmp.leaveFullscreen();
+                }
+                return this;
+            }
+            this.debug('Работа с интерфейсом невозможна!');
+            return false;
+        }
+
+    };
+
+    if (typeof require === 'function') { // JsMB
+        try {
+            $Interface.$NW = require('nw.gui');
+        } catch (e) {
+            throw new Error('Your system doesn\'t support native interface');
+        }
+    } else if (typeof localStorage !== 'undefined') { // eslint-disable-line
+        // Browser
+        // TODO: Add browser support
+        throw new Error('The browser doesn\'t support native interface!');
+    } else {
+        throw new Error('Your system doesn\'t support native interface');
+    }
+
+    // Bind this
+    for (const i in $Interface) {
+        if (typeof $Interface[i] === 'function') $Interface[i] = $Interface[i].bind(JsMB);
+    }
+
+    Object.assign(JsMB, $Interface);
+    Object.assign(window, $Interface);
 }

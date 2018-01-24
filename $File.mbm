@@ -1,8 +1,9 @@
-/* 
+/*
  * File module for JsMobileBasic.
  * Help: https://vk.com/page-123026568_53604956
  * Author: PROPHESSOR
  * Supports:
+ *  JsMB-Interpreter, NW.JS [+]
  *  Node FS [+]
  *  JsOS FS [+]
  *  Browser pseudo-fs [-]
@@ -10,54 +11,131 @@
 
 'use strict';
 
-// /* eslint-disable */
-
-(function () {
+/** Модуль для работы с файлами
+ * Поддерживает:
+ *  JsMB-Interpreter
+ *  NW.JS
+ *  Node.JS
+ *  JsOS
+ * @module $File
+ * @author PROPHESSOR
+ */
+{
     const $File = {
-        saveData(filename, data, callback) {
-            if (!this.$NW) return !!console.error("Can't find base path");
+
+        /** Сохраняет данные в папку приложения (appdata)
+         * @param  {string} filename - Имя файла
+         * @param  {object} data - Данные для сохранения
+         * @returns {this}
+         */
+        saveData(filename, data) {
+            if (!this.$NW) return Boolean(console.error('Can\'t find base path'));
             const filePath = this.$Path.join(this.$NW.App.dataPath, `${filename}.json`);
+
             try {
-                $File.writeFileSync(filePath, this.toJSON(data), "utf8");
-                return true;
+                $File.writeFileSync(filePath, this.toJSON(data), 'utf8');
+                return this;
             } catch (e) {
-                console.error("Ошибка записи данных: ", e);
+                console.error('Ошибка записи данных: ', e);
                 return false;
             }
         },
 
+        /** Читает данные из файла в папке приложения (appdata)
+         * @param  {string} filename - Имя файла
+         * @returns {object} Объект или строка
+         */
         readData(filename) {
-            if (!this.$NW) return !!console.error("Can't find base path");
+            if (!this.$NW) return Boolean(console.error('Can\'t find base path'));
             const filePath = this.$Path.join(this.$NW.App.dataPath, `${filename}.json`);
             let data = null;
+
             try {
                 data = $File.readFileSync(filePath, 'utf8');
             } catch (e) {
-                console.error("Ошибка чтения данных: ", e);
+                console.error('Ошибка чтения данных: ', e);
                 return false;
             }
             let json = null;
+
             try {
                 json = this.parseJSON(data);
             } catch (e) {}
             return json || data;
+        },
+
+        /** Прочитать данные из файла
+         * @param  {string} file - Файл
+         * @returns {string}
+         */
+        readFile(file) {
+            try {
+                return $File.readFileSync(file, 'utf8');
+            } catch (e) {
+                console.error('Ошибка чтения данных: ', e);
+                return false;
+            }
+        },
+        
+        /** Записать в файл
+         * @param  {string} file - Файл
+         * @param  {string} data - Данные
+         * @returns {this}
+         */
+        writeFile(file, data) {
+            try {
+                $File.writeFileSync(file, data, 'utf8');
+                return this;
+            } catch (e) {
+                console.error('Ошибка записи данных: ', e);
+                return false;
+            }
+        },
+
+        /** Чтение файла в бинароном виде
+         * @param  {string} file - Файл
+         * @returns {Buffer}
+         */
+        readFileBinary(file) {
+            try {
+                return $File.readFileSync(file);
+            } catch (e) {
+                console.error('Ошибка чтения данных: ', e);
+                return false;
+            }
+        },
+        
+        /** Запись файла в бинарном виде
+         * @param  {string} file - Файл
+         * @param  {Buffer} data - Буфер с данными
+         * @returns {this}
+         */
+        writeFileBinary(file, data) {
+            try {
+                $File.writeFileSync(file, data);
+                return this;
+            } catch (e) {
+                console.error('Ошибка записи данных: ', e);
+                return false;
+            }
         }
     };
 
-    if (typeof require === "function") { //JsOS or Node
+    if (typeof require === 'function') { // JsOS or Node
         $File.$File = require('fs');
         $File.$Path = require('path');
-    } else if (typeof localStorage !== "undefined") { //Browser
-        //TODO: Add browser support
-        throw new Error("At this time, the browser is not supported!");
+    } else if (typeof localStorage !== 'undefined') { // eslint-disable-line
+        // Browser
+        // TODO: Add browser support
+        throw new Error('At this time, the browser is not supported!');
     } else {
-        throw new Error("Your system doesn't support FileSystem");
+        throw new Error('Your system doesn\'t support FileSystem');
     }
 
-    for(const i in $File) {
-        if(typeof $File[i] === 'function') $File[i] = $File[i].bind(JsMB);
+    for (const i in $File) {
+        if (typeof $File[i] === 'function') $File[i] = $File[i].bind(JsMB);
     }
 
     Object.assign(JsMB, $File);
     Object.assign(window, $File);
-})();
+}
