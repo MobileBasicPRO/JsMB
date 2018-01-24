@@ -1,0 +1,60 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "node": false
+    },
+    "globals": {
+        "$JsMobileBasic": true,
+        "$Config": true,
+        "onClick": true,
+        "onRightClick": true,
+        "onMouseMove": true,
+        "onMouseDown": true,
+        "onMouseUp": true,
+        "onKeyDown": true,
+        "onKeyUp": true,
+        "onKeyPress": true,
+        "Main": true,
+        "Loop": true,
+        "JsMB": true
+    },
+    "rules": {
+        "prefer-const": "error",
+        "no-var":"error",
+        "strict": [2, "global"],
+        "no-const-assign": "warn",
+        "no-this-before-super": "warn",
+        "no-undef": "warn",
+        "no-unreachable": "warn",
+        "no-unused-vars": "off",
+        "constructor-super": "warn",
+        "valid-typeof": "warn",
+        "no-console": "off",
+        "new-cap": "off",
+        "no-use-before-define": [2, {
+            "functions": false,
+            "classes": true
+        }],
+        "no-param-reassign": "error",
+        "wrap-iife": [2, "inside"],
+        "no-return-assign":"warn",
+        "no-underscore-dangle":"off",
+        "consistent-return":"off"
+    },
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "script",
+        "ecmaFeatures": {
+            "modules": false,
+            "defaultParams": true,
+            "classes": true,
+            "arrowFunctions": true,
+            "blockBindings": true,
+            "forOf": true,
+            "spread": true,
+            "templateStrings": true
+        }
+    }
+}

@@ -5,47 +5,45 @@
  * ================================//
  */
 
-/* global $Config */
-
 'use strict';
 
-//Графика
-
+// Графика
+/**
+ * @namespace JsMB
+ */
 const JsMB = {
-    $Mouse: {
-        x: 0,
-        y: 0,
-        lcount: 0,
-        rcount: 0
+    '$Mouse': {
+        'x': 0,
+        'y': 0,
+        'lcount': 0,
+        'rcount': 0
     },
-    $Gel: {
-        $Sprite: {}
+    '$Gel': {'$Sprite': {}},
+    '$Font': {
+        'family': 'arial',
+        'size': '10'
     },
-    $Font: {
-        family: 'arial',
-        size: '10'
-    },
-    $Element: {},
-    $JsMobileBasic: {
-        name: 'JsMobileBasic',
-        version: 'Alpha 11',
-        author: 'PROPHESSOR',
-        url: 'http://vk.com/JsMobileBasic',
-        Mobile: $Config.Mobile,
-        Debug: true,
-        canvas: typeof document !== 'undefined' ? document.getElementById('c') : null,
-        graphics: false,
-        supports: {
-            document: typeof document !== 'undefined',
-            window: typeof window !== 'undefined',
-            ls: typeof localStorage !== 'undefined'
+    '$Element': {},
+    '$JsMobileBasic': {
+        'name': 'JsMobileBasic',
+        'version': 'Alpha 11',
+        'author': 'PROPHESSOR',
+        'url': 'http://vk.com/JsMobileBasic',
+        'Mobile': $Config.Mobile,
+        'Debug': true,
+        'canvas': typeof document === 'undefined' ? null : document.getElementById('c'),
+        'graphics': false,
+        'supports': {
+            'document': typeof document !== 'undefined',
+            'window': typeof window !== 'undefined',
+            'ls': typeof localStorage !== 'undefined'
         }
     },
 
-    PI: Math.PI,
-    G: 9.8,
-    RAD2DEG: 180 / this.PI,
-    DEG2RAD: this.PI / 180,
+    'PI': Math.PI,
+    'G': 9.8,
+    'RAD2DEG': 180 / Math.PI,
+    'DEG2RAD': Math.PI / 180,
 
     __preinit() {
         for (const i in this) {
@@ -53,24 +51,21 @@ const JsMB = {
         }
     },
 
-    __init({
-        canvas,
-        div
-    }) {
-        if (typeof require !== "function") window.require = () => console.warn("Использование системных функций не поддерживается на Вашей платформе");
+    __init({canvas}) {
+        if (typeof require !== 'function') window.require = () => console.warn('Использование системных функций не поддерживается на Вашей платформе');
 
-        const supports = this.$JsMobileBasic.supports;
+        const {supports} = this.$JsMobileBasic;
 
         this.debug('#===== Включён режим отладки =====#', 'color:gray;');
         this.debug(this.$JsMobileBasic.name, 'background:gray;color:yellow;');
-        this.debug("v. " + this.$JsMobileBasic.version, 'background:gray;color:yellow;');
-        this.debug("by " + this.$JsMobileBasic.author, 'background:gray;color:yellow;');
+        this.debug('v. ' + this.$JsMobileBasic.version, 'background:gray;color:yellow;');
+        this.debug('by ' + this.$JsMobileBasic.author, 'background:gray;color:yellow;');
         this.debug(this.$JsMobileBasic.url, 'background:gray;color:yellow;');
 
         // ======Инициализация рабочей среды======//
         this.debug('// ======Инициализация рабочей среды======//', 'color:gray;');
         // Чтение конфига
-        if (typeof $Config === "undefined") {
+        if (typeof $Config === 'undefined') {
             console.error('Не найден файл конфигурации!');
         }
 
@@ -85,10 +80,13 @@ const JsMB = {
 
             this.c = canvas;
             //    this.$JsMobileBasic.canvas = this.c;
-            this.ctx = this.c.getContext("2d");
+            this.ctx = this.c.getContext('2d');
             if ($Config.canvas_size[0] === '*' && $Config.canvas_size[1] === '*') {
                 this.debug('Canvas растянут на весь экран', 'background:black;color:#00ff00;');
-                $Config.canvas_size[2] ? this.debug('Вмещение включено') : this.debug('Вмещение выключено');
+                if ($Config.canvas_size[2])
+                    this.debug('Вмещение включено');
+                else
+                    this.debug('Вмещение выключено');
                 this.c.height = window.innerHeight;
                 this.c.width = window.innerWidth;
                 if ($Config.canvas_size[2]) {
@@ -96,8 +94,7 @@ const JsMB = {
                 }
             } else {
                 // this.debug(this.$Config.canvas_size);
-                this.c.height = $Config.canvas_size[1];
-                this.c.width = $Config.canvas_size[0];
+                [this.c.width, this.c.height] = $Config.canvas_size;
             }
         } else {
             this.debug('Графика не используется!', 'background:black;color:yellow;');
@@ -111,7 +108,7 @@ const JsMB = {
 
         this.debug('Имя проекта: ' + $Config.name, 'background:brown;color:yellow;');
 
-        this.$Player = [supports.document ? document.getElementById("player0") : null];
+        this.$Player = [supports.document ? document.getElementById('player0') : null];
 
         this.debug('// ======Инициализация интерпретатора======//', 'color:gray;');
 
@@ -119,6 +116,7 @@ const JsMB = {
 
     /** Задать текущий цвет
      * @param  {string} color - Свет в CSS формате
+     * @returns {this}
      */
     setColor(color) {
         this.ctx.fillStyle = color;
@@ -128,6 +126,7 @@ const JsMB = {
 
     /** Задать толщину линий
      * @param  {number} width - Толщина
+     * @returns {this}
      */
     setLineWidth(width) {
         this.ctx.lineWidth = width;
@@ -139,6 +138,7 @@ const JsMB = {
      * @param  {number} y - Координата Y левого верхнего угла
      * @param  {number} w - Ширина
      * @param  {number} h - Высота
+     * @returns {this}
      */
     fillRect(x, y, w, h) {
         this.ctx.fillRect(x, y, w, h);
@@ -147,6 +147,7 @@ const JsMB = {
 
     /** Переключить полноэкранный режим
      * @param  {bool} mode - true - включить, false - отключить
+     * @returns {this}
      */
     fullScreen(mode) {
         if (this.$JsMobileBasic.supports.document) {
@@ -155,22 +156,25 @@ const JsMB = {
             } else {
                 document.cancelFullScreen();
             }
-        } else {
-            this.debug("Работа в полноэкранном режиме невозможна!");
-            return false;
+            return this;
         }
+        this.debug('Работа в полноэкранном режиме невозможна!');
+        return false;
     },
 
     /** Очищает экран
+     * @returns {this}
      */
     cls() {
         this.clearRect(0, 0, this.screenWidth(), this.screenHeight());
-        document.getElementById('p').innerHTML = '';
+        if (this.$JsMobileBasic.supports.document)
+            document.getElementById('p').innerHTML = '';
         return this;
     },
 
     /** Заливает экран выбранным цветом
      * @param  {string} color - Цвет в CSS формате
+     * @returns {this}
      */
     fillScreen(color) {
         this.ctx.save();
@@ -185,6 +189,7 @@ const JsMB = {
      * @param  {number} y - Координата Y левого верхнего угла
      * @param  {number} w - Ширина
      * @param  {number} h - Высота
+     * @returns {this}
      */
     drawRect(x, y, w, h) {
         this.ctx.strokeRect(x, y, w, h);
@@ -194,6 +199,7 @@ const JsMB = {
     /** Рисует точку по координатам (заливает пиксель)
      * @param  {number} x - X координата точки
      * @param  {number} y - Y координата точки
+     * @returns {this}
      */
     drawPlot(x, y) {
         this.fillRect(x, y, 1, 1);
@@ -205,9 +211,10 @@ const JsMB = {
      * @param  {number} y - Координата Y левого верхнего угла
      * @param  {number} w - Ширина
      * @param  {number} h - Высота
+     * @returns {this}
      */
-    clearRect(x, y, x1, y1) {
-        this.ctx.clearRect(x, y, x1, y1);
+    clearRect(x, y, w, h) {
+        this.ctx.clearRect(x, y, w, h);
         return this;
     },
 
@@ -216,21 +223,23 @@ const JsMB = {
      * @param  {number} y1 - Y 1 точки
      * @param  {number} x2 - X 2 точки
      * @param  {number} y2 - Y 2 точки
+     * @returns {this}
      */
     drawLine(x1, y1, x2, y2) {
         this.ctx.beginPath();
         this.ctx.moveTo(x1, y1);
-        this.ctx.lineTo(x2, y2)
+        this.ctx.lineTo(x2, y2);
         this.ctx.stroke();
         return this;
     },
 
     /** Рисует проекцию паралелепипеда (через 2 соединенных прямоугольника)
-     * @param  {number} x - XY левого верхнего угла
-     * @param  {number} y - XY левого верхнего угла
+     * @param  {number} x - X левого верхнего угла
+     * @param  {number} y - Y левого верхнего угла
      * @param  {number} w - ширина
      * @param  {number} h - высота
      * @param  {number} q - глубина
+     * @returns {this}
      */
     drawCube(x, y, w, h, q) {
         this.ctx.strokeRect(x, y, w, h);
@@ -246,9 +255,10 @@ const JsMB = {
      * @param  {number} x - X центра
      * @param  {number} y - Y центра
      * @param  {number} radius - радиус
-     * @param  {number} startAngle=(15*Math.PI/7) - Угол начала
-     * @param  {number} endAngle=(13*Math.PI/2) - Угол конца
+     * @param  {number} startAngle=(15*PI/7) - Угол начала
+     * @param  {number} endAngle=(13*PI/2) - Угол конца
      * @param  {bool} counterClockwise=false - По часовой стрелке?
+     * @returns {this}
      */
     drawArc(x, y, radius,
         startAngle = (15 * Math.PI / 7),
@@ -264,9 +274,10 @@ const JsMB = {
      * @param  {number} x - X центра
      * @param  {number} y - Y центра
      * @param  {number} radius - радиус
-     * @param  {number} startAngle=(15*Math.PI/7) - Угол начала
-     * @param  {number} endAngle=(13*Math.PI/2) - Угол конца
+     * @param  {number} startAngle=(15*PI/7) - Угол начала
+     * @param  {number} endAngle=(13*PI/2) - Угол конца
      * @param  {bool} counterClockwise=false - По часовой стрелке?
+     * @returns {this}
      */
     fillArc(x, y, radius,
         startAngle = (15 * Math.PI / 7),
@@ -287,6 +298,7 @@ const JsMB = {
      * @param  {number} y3 - Y 3 точки
      * @param  {number} x4 - X 4 точки
      * @param  {number} y4 - Y 4 точки
+     * @returns {this}
      */
     fillRect4(x1, y1, x2, y2, x3, y3, x4, y4) {
         this.ctx.beginPath();
@@ -310,6 +322,7 @@ const JsMB = {
      * @param  {number} y3 - Y 3 точки
      * @param  {number} x4 - X 4 точки
      * @param  {number} y4 - Y 4 точки
+     * @returns {this}
      */
     drawRect4(x1, y1, x2, y2, x3, y3, x4, y4) {
         this.ctx.beginPath();
@@ -332,6 +345,7 @@ const JsMB = {
      * @param  {number} y2 - Y 2 точки
      * @param  {number} x3 - X 3 точки
      * @param  {number} y3 - Y 3 точки
+     * @returns {this}
      */
     fillTriangle(x1, y1, x2, y2, x3, y3) {
         this.ctx.beginPath();
@@ -347,10 +361,11 @@ const JsMB = {
 
     /** Рисует n-угольник по точкам
      * @param  {array} array - Двумерный массив точек ([[x,y],[x1,y1],...])
+     * @returns {this}
      */
     drawNangle(array) {
         if (!(array && array.length)) {
-            console.warn("Аргументом оператора drawNangle должен быть двумерный массив!");
+            console.warn('Аргументом оператора drawNangle должен быть двумерный массив!');
             return this;
         }
 
@@ -367,10 +382,11 @@ const JsMB = {
 
     /** Рисует залитый n-угольник по точкам
      * @param  {array} array - Двумерный массив точек ([[x,y],[x1,y1],...])
+     * @returns {this}
      */
     fillNangle(array) {
         if (!(array && array.length)) {
-            console.warn("Аргументом оператора fillNangle должен быть двумерный массив!");
+            console.warn('Аргументом оператора fillNangle должен быть двумерный массив!');
             return this;
         }
 
@@ -392,6 +408,7 @@ const JsMB = {
      * @param  {number} y2 - Y 2 точки
      * @param  {number} x3 - X 3 точки
      * @param  {number} y3 - Y 3 точки
+     * @returns {this}
      */
     drawTriangle(x1, y1, x2, y2, x3, y3) {
         this.ctx.beginPath();
@@ -409,6 +426,7 @@ const JsMB = {
      * @param  {string} text - Текст для отображения
      * @param  {number} x - X
      * @param  {number} y - Y
+     * @returns {this}
      */
     drawString(text, x, y) {
         this.ctx.fillText(text, x, y);
@@ -418,6 +436,7 @@ const JsMB = {
     /** В некоторых реализациях JsMB используется двойная буфферизация
      * repaint производит отрисовку на экран ранее произведенных действий
      * В стандартной реализации ничего не делает
+     * @returns {this}
      */
     repaint() {
         return this;
@@ -425,18 +444,20 @@ const JsMB = {
 
     /** Задать размер шрифта
      * @param  {number} size - Размер
+     * @returns {this}
      */
     setFontSize(size) {
-        this.ctx.font = size + "px " + this.$Font.family;
+        this.ctx.font = size + 'px ' + this.$Font.family;
         this.$Font.size = size;
         return this;
     },
 
     /** Задать шрифт
      * @param  {string} family - Шрифт
+     * @returns {this}
      */
     setFont(family) {
-        this.ctx.font = this.$Font.size + "px " + family;
+        this.ctx.font = this.$Font.size + 'px ' + family;
         this.$Font.family = family;
         return this;
     },
@@ -446,6 +467,7 @@ const JsMB = {
      * @param  {number} y - Y координата левого верхнего угла
      * @param  {number} x1 - X координата правого нижнего угла
      * @param  {number} y1 - Y координата правого нижнего угла
+     * @returns {this}
      */
     makeLinearGradient(x, y, x1, y1) {
         return this.ctx.createLinearGradient(x, y, x1, y1);
@@ -458,6 +480,7 @@ const JsMB = {
      * @param  {number} x1 - X координата правого нижнего угла
      * @param  {number} y1 - Y координата правого нижнего угла
      * @param  {number} r1 - Радиус внешнего круга
+     * @returns {this}
      */
     makeRadialGradient(x, y, r, x1, y1, r1) {
         return this.ctx.createRadialGradient(x, y, r, x1, y1, r1);
@@ -467,13 +490,14 @@ const JsMB = {
      * @param  {gradient} g - Градиент
      * @param  {number} pos - Позиция (0 - 1)
      * @param  {string} color - Цвет в CSS формате
+     * @returns {this}
      */
     setGradientColor(g, pos, color) {
         g.addColorStop(pos, color);
         return this;
     },
 
-    //Конвертеры
+    // Конвертеры
 
     /** Цвет в rgb
      * @param  {number} red=0 - Значение красного цвета (0 - 255)
@@ -482,7 +506,7 @@ const JsMB = {
      * @returns {string} "rgb(red, green, blue)"
      */
     rgb(red = 0, green = 0, blue = 0) {
-        return "rgb(" + red + "," + green + "," + blue + ")";
+        return 'rgb(' + red + ',' + green + ',' + blue + ')';
     },
 
     /** Цвет в rgb
@@ -493,14 +517,15 @@ const JsMB = {
      * @returns {string} "rgba(red, green, blue, alpha)"
      */
     rgba(red = 0, green = 0, blue = 0, alpha = 0) {
-        return "rgba(" + red + "," + green + "," + blue + "," + alpha + ")";
+        return 'rgba(' + red + ',' + green + ',' + blue + ',' + alpha + ')';
     },
 
-    //Гели/спрайты
+    // Гели/спрайты
 
     /** Загрузить гель в память
      * @param  {string} file - Файл (./,http,...)
      * @param  {string} name - Имя геля
+     * @returns {this}
      */
     gelLoad(file, name) {
         this.$Gel[name] = new Image();
@@ -512,8 +537,9 @@ const JsMB = {
      * Переводит гель в спрайт
      * @param  {string} sprite - Имя спрайта
      * @param  {string} gel - Имя геля
+     * @returns {this}
      */
-    spriteGel(sprite, gel) {
+    spriteGel(/* sprite, gel */) {
         console.warn('Внимание! Оператор spriteGel не работает!');
         return this;
     },
@@ -522,6 +548,7 @@ const JsMB = {
      * @param  {string} name - Имя геля
      * @param  {number} x - X координата левого верхнего угла
      * @param  {number} y - Y координата левого верхнего угла
+     * @returns {this}
      */
     drawGel(name, x, y) {
         if (this.$Gel[name].resize == true) {
@@ -537,16 +564,18 @@ const JsMB = {
      * @param  {string} name - Имя спрайта
      * @param  {number} x - X координата левого верхнего угла
      * @param  {number} y - Y координата левого верхнего угла
+     * @returns {this}
      */
-    drawSprite(name, x, y) {
+    drawSprite(/* name, x, y */) {
         console.warn('Внимание! Оператор drawSprite не работает!');
-        return false;
+        return this;
     },
 
     /** Задать размеры гелю (деформация)
      * @param  {string} name - Название геля
      * @param  {number} w - Ширина
      * @param  {number} h - Высота
+     * @returns {this}
      */
     gelSize(name, w, h) {
         this.$Gel[name].resize = true;
@@ -565,8 +594,9 @@ const JsMB = {
      * @param  {number} y - Координаты левого верхнего угла для рисования
      * @param  {number} w=fw - ширина для рисования
      * @param  {number} h=fh - высота для рисования
+     * @returns {this}
      */
-    drawGelFragment(name, fx, fy, fw, fh, x, y, w = fw, h = fh) { //TODO: Проверить
+    drawGelFragment(name, fx, fy, fw, fh, x, y, w = fw, h = fh) { // TODO: Проверить
         this.ctx.drawImage(this.$Gel[name], fx, fy, fw, fh, x, y, w, h);
         return this;
     },
@@ -574,53 +604,59 @@ const JsMB = {
     /** Создает текстуру из геля
      * @param  {string} gelname - Имя геля
      * @param  {string} repeat='repeat' - Повторение (repeat/no-repeat)
+     * @returns {this}
      */
-    makeTexture(gelname, repeat = 'repeat') { //repeat/no-repeat
+    makeTexture(gelname, repeat = 'repeat') { // repeat/no-repeat
         return this.ctx.createPattern(this.$Gel[gelname], repeat);
     },
 
 
-    //Ввод
+    // Ввод
 
     /** Окно ввода данных
      * @param  {string} text - Текст заголовка окна
      * @param  {string} [def] - Текст по умолчанию
+     * @returns {this}
      */
     input(text, def) {
-        return prompt(text, def);
+        return prompt(text, def); // eslint-disable-line
     },
 
 
-    //Вывод
+    // Вывод
 
     /** Вывести текст на экран
+     * @returns {this}
      */
     println(...text) {
         const p = document.getElementById('p');
-        p.style = "position:fixed;top:0px;left:0px;width:100%;height:100%;-webkit-user-select:none;    pointer-events: none;";
-        p.innerHTML += text + "<br/>";
+
+        p.style = 'position:fixed;top:0px;left:0px;width:100%;height:100%;-webkit-user-select:none;    pointer-events: none;';
+        p.innerHTML += text + '<br/>';
         return this;
     },
 
-    //Звук
+    // Звук
 
     /** Играть звук
-     * @param  {string} file - Файл звука 
+     * @param  {string} file - Файл звука
      * @param  {bool} loop - Зациклить?
      * @param  {string} channel=0 - Канал
+     * @returns {this}
      */
     playSound(file, loop = false, channel = 0) {
         if (!this.$Player[0]) {
-            console.warn("На вашей платформе не поддерживается воспроизведение звука!");
+            console.warn('На вашей платформе не поддерживается воспроизведение звука!');
             return this;
         }
         if (this.$Player[channel] === undefined) {
             const p = document.createElement('audio');
-            p.id = "player" + channel;
+
+            p.id = 'player' + channel;
             document.getElementById('audio').appendChild(p);
             this.$Player[channel] = document.getElementById('player' + channel);
         }
-        this.$Player[channel].setAttribute("src", file);
+        this.$Player[channel].setAttribute('src', file);
 
         this.$Player[channel].setAttribute('loop', Number(loop));
 
@@ -630,212 +666,256 @@ const JsMB = {
 
     /** Приостановить воспроизведение звука на канале
      * @param  {number} channel=-1 - Канал (-1 для остановки на всех каналах)
+     * @returns {this}
      */
     pauseSound(channel = -1) {
         if (!this.$Player[0]) return this;
         if (channel == -1) {
-            for (const i in this.$Player) {
-                this.$Player[i].pause();
+            for (const ch of this.$Player) {
+                ch.pause();
             }
             return this;
         }
         if (this.$Player[channel] === undefined) {
-            this.debug("На данном канале нет плеера");
+            this.debug('На данном канале нет плеера');
             return false;
         }
         this.$Player[channel].pause();
         return this;
     },
 
-    //Matheматика
+    // Matheматика
 
     /** Возвращает квадратный корень из числа
      * @param  {number} number - Число
      */
-    sqrt: Math.sqrt,
+    'sqrt': Math.sqrt,
 
     /** Возвращает случайное число
      * @param  {number} min - От
      * @param  {number} max - До
+     * @returns {number}
      */
-    random: (min, max) => Math.floor(Math.random() * max - min) + min,
+    'random': (min, max) => Math.floor((Math.random() * max) - min) + min,
 
     /** Возвращает синус угла
      * @param  {number} angle - Угол в радианах
+     * @returns {number}
      */
-    sin: Math.sin,
+    'sin': Math.sin,
 
     /** Возвращает косинус угла
      * @param  {number} angle - Угол в радианах
+     * @returns {number}
      */
-    cos: Math.cos,
+    'cos': Math.cos,
 
     /** Возвращает тангенс угла
      * @param  {number} angle - Угол в радианах
+     * @returns {number}
      */
-    tan: Math.tan,
+    'tan': Math.tan,
 
     /** Возвращает котангенс угла
      * @param  {number} angle - Угол в радианах
+     * @returns {number}
      */
-    ctg: (angle) => 1 / Math.tan(angle),
+    'ctg': angle => 1 / Math.tan(angle),
 
     /** Возвращает арксинус угла (в радианах)
      * @param  {number} angle - Угол в радианах
+     * @returns {number}
      */
-    asin: Math.asin,
+    'asin': Math.asin,
 
     /** Возвращает арккосинус угла (в радианах)
      * @param  {number} angle - Угол в радианах
+     * @returns {number}
      */
-    acos: Math.acos,
+    'acos': Math.acos,
 
     /** Возвращает арктангенс угла (в радианах)
      * @param  {number} angle - Угол в радианах
+     * @returns {number}
      */
-    atan: Math.atan,
+    'atan': Math.atan,
 
     /** Возвращает остаток от деления 2-х чисел
      * @param  {number} x - Делимое
      * @param  {number} y - Делитель
+     * @returns {number}
      */
-    mod: (x, y) => x % y,
+    'mod': (x, y) => x % y,
 
     /** Возвращает модуль числа
      * @param  {number} number - Число
+     * @returns {number}
      */
-    abs: Math.abs,
+    'abs': Math.abs,
 
     /** Возводит число в степень
      * @param  {number} number - Число
      * @param  {number} power - Степень
+     * @returns {number}
      */
-    pow: Math.pow,
+    'pow': Math.pow,
 
     /** Возвращает натуральный логарифм от числа
      * @param  {number} number - Число
+     * @returns {number}
      */
-    ln: Math.log,
+    'ln': Math.log,
 
     /** Возвращает число e в степени
      * @param  {number} power - Степень
+     * @returns {number}
      */
-    exp: Math.exp,
+    'exp': Math.exp,
 
     /** Возвращает ограниченное значение переменной
      * @param  {number} variable - Начальное значение
      * @param  {number} min - Минимум (нижняя граница)
      * @param  {number} max - Максимум (верхняя граница)
+     * @returns {number}
      */
-    limit: (variable, min, max) => variable <= min ? min : max,
+    limit(variable, min, max) {
+        return variable <= min ? min : max;
+    },
 
     /** Возвращает минимальное значение из аргументов
+     * @returns {number}
      */
-    min: Math.min,
+    'min': Math.min,
 
     /** Возвращает максимальное значение из аргументов
+     * @returns {number}
      */
-    max: Math.max,
+    'max': Math.max,
 
     /** Переводит градусы в радианы
      * @param  {number} deg - Значение в градусах
+     * @return {number} Радианы
      */
-    rad: (deg) => {
+    rad(deg) {
         if (deg === 90) return this.PI / 2;
         if (deg === 270) return 3 * this.PI / 2;
         return deg * this.DEG2RAD;
     },
 
     /** Переводит радианы в градусы
-     * @param  {number} rad - Значение в градусах
+     * @param  {number} rad - Значение в радианах
+     * @returns {number} Градусы
      */
-    deg: (rad) => rad * this.RAD2DEG,
+    deg(rad) {
+        return rad * this.RAD2DEG;
+    },
 
-    //Строковые функции
+    // Строковые функции
 
 
     /** Возвращает длину строки/массива
      * @param  {string} str - Строка/массив
+     * @return {number}
      */
-    len: (str) => str.length,
+    'len': str => str.length,
 
     /** Переводит число/значение в строку
      * @param  {*} num - Число или другое значение
+     * @returns {string}
      */
-    str: (num) => String(num),
+    'str': num => String(num),
 
     /** Переводит строку в число (или возвращает NaN, если это невозможно)
      * @param  {string} str - Строка с числом
+     * @return {number}
      */
-    val: (str) => Number(str),
+    'val': str => Number(str),
 
     /** Переводит строку в число (или возвращает NaN, если это невозможно)
      * Лучше использовать val
      * @param  {string} str - Строка с числом
+     * @param  {number} [system=10] - Система исчисления
+     * @return {number} Int
      */
-    int: (str) => parseInt(str),
+    int(str, system = 10) {
+        return parseInt(str, system);
+    },
 
     /** Переводит строку в число с плавающей точкой (или возвращает NaN, если это невозможно)
      * @param  {string} str - Строка с числом
+     * @return {number} Float
      */
-    float: (str) => parseFloat(str),
+    'float': str => parseFloat(str),
 
     /** Приводит все символы строки в ВЕРХНИЙ РЕГИСТР
      * @param  {string} str - Строка
+     * @return {string}
      */
-    upper: (str) => str.toUpperCase(),
+    'upper': str => str.toUpperCase(),
 
     /** Приводит все символы строки в нижний регистр
      * @param  {string} str - Строка
+     * @returns {string}
      */
-    lower: (str) => str.toLowerCase(),
+    'lower': str => str.toLowerCase(),
 
     /** Возвращает часть строки
      * @param  {string} str - Строка
      * @param  {number} pos - Начало выделения
      * @param  {number} len - Длина выделения
+     * @returns {string}
      */
-    mid: (str, pos, len) => str.substr(pos, len),
+    'mid': (str, pos, len) => str.substr(pos, len),
 
     /** Возвращает символ по его коду. Можно передать несколько кодов
      * @param  {number} code - Код(ы) символа
+     * @return {string}
      */
-    chr: String.fromCharCode, //code to string
+    'chr': String.fromCharCode, // code to string
 
     /** Возвращает код символа
      * @param  {string} str - Строка
      * @param  {number} [pos=0] - Позиция символа в строке
+     * @return {number}
      */
-    asc: (str, pos = 0) => str.charCodeAt(pos), //string to code
+    'asc': (str, pos = 0) => str.charCodeAt(pos), // string to code
 
     /** Разбивает строку и возвращает массив частей
      * @param  {string} str - Строка
      * @param  {string} char - Символ/регулярное выражение, по которому разбивать
+     * @return {array}
      */
-    split: (str, char) => str.split(char),
+    'split': (str, char) => str.split(char),
 
     /** Возвращает строку с замененной частью
      * @param  {string} str - Строка
      * @param  {string} reg - Строка/регулярное выражение для замены
      * @param  {string} to - На что менять
      * @param  {bool} [all=false] - Заменять все включения
+     * @return {string}
      */
-    replace: (str, reg, to, all = false) => all ? str.replace(new RegExp(reg, 'g')) : str.replace(reg, to),
+    replace(str, reg, to, all = false) {
+        if (all) return str.replace(new RegExp(reg, 'g'));
+        return str.replace(reg, to);
+    },
 
-    //Работа с локальными данными
+    // Работа с локальными данными
 
     /** Сохранить данные в хранилище
      * @param  {string} name - Название ячейки
      * @param  {*} _data - Данные
+     * @returns {this}
      */
     localSaveData(name, _data) {
-        const data = typeof (_data) == "object" ? this.toJSON(_data) : _data;
+        const data = typeof (_data) == 'object' ? this.toJSON(_data) : _data;
+
         window.localStorage.setItem(name, data);
         return this;
     },
 
     /** Получить данные из хранилища
      * @param  {string} name - Название ячейки
+     * @returns {this}
      */
     localReadData(name) {
         try {
@@ -847,8 +927,9 @@ const JsMB = {
 
     /** Возвращает объект из JSON строки
      * @param  {string} json - JSON строка
+     * @return {object}
      */
-    parseJSON: (json) => {
+    'parseJSON': (json) => {
         try {
             return JSON.parse(json);
         } catch (e) {
@@ -860,24 +941,28 @@ const JsMB = {
      * @param  {object} object - Объект
      * @param  {function} [f=null] - Дополнительный обработчик
      * @param  {number} [s=4] - Отступ
+     * @returns {string}
      */
-    toJSON: (object, f = null, s = 4) => JSON.stringify(object, f, 4),
+    'toJSON': (object, f = null, s = 4) => JSON.stringify(object, f, s),
 
     /** Возвращает PSON строку из объекта (с функциями)
      * @param  {object} object - Объект
      * @param  {number} [s=4] - Отступ
+     * @return {string}
      */
-    toPSON: (object, s = 4) => JSON.stringify(object, (a, b) => typeof b === 'function' ? '' + b : b, s),
+    'toPSON': (object, s = 4) => JSON.stringify(object, (a, b) => typeof b === 'function' ? String(b) : b, s), // eslint-disable-line
 
-    //Работа с модулями
+    // Работа с модулями
 
     /** Подключает модуль/файл
      * @param  {string} file - Имя/адрес файла
+     * @returns {this}
      */
-    include: (file) => {
-        const e = document.createElement("script");
+    include(file) {
+        const e = document.createElement('script');
+
         e.src = file;
-        e.type = "text/javascript";
+        e.type = 'text/javascript';
         document.getElementById('modules').appendChild(e);
         return this;
     },
@@ -907,57 +992,64 @@ const JsMB = {
         return ID.version;
     },
 
-    //Получение значений
+    // Получение значений
 
     /** Возвращает ширину экрана
+     * @returns {number}
      */
     screenWidth() {
         if (this.$JsMobileBasic.graphics || this.$JsMobileBasic.canvas) {
             return this.$JsMobileBasic.canvas.width;
-        } else {
-            return window.innerWidth;
         }
+        return window.innerWidth;
+
     },
 
     /** Возвращает высоту экрана
+     * @returns {number}
      */
     screenHeight() {
         if (this.$JsMobileBasic.graphics || this.$JsMobileBasic.canvas) {
             return this.$JsMobileBasic.canvas.height;
-        } else {
-            return window.innerHeight;
         }
+        return window.innerHeight;
+
     },
 
     /** Возвращает X координату мыши в данный момент
+     * @returns {number}
      */
     getMouseX() {
         return this.$Mouse.x;
     },
 
     /** Возвращает Y координату мыши в данный момент
+     * @returns {number}
      */
     getMouseY() {
         return this.$Mouse.y;
     },
 
     /** Возвращает количество кликов с момента запуска программы
+     * @returns {number}
      */
     getLeftClicksCount() {
         return this.$Mouse.lcount;
     },
 
     /** Возвращает количество правых кликов с момента запуска программы
+     * @returns {number}
      */
     getRightClicksCount() {
         return this.$Mouse.rcount;
     },
 
 
-    //Техническое
+    // Техническое
 
     /** Логирование
      * @param  {*} - Данные
+     * @returns {this}
      */
     log(...text) {
         console.log(...text);
@@ -967,20 +1059,18 @@ const JsMB = {
     /** Вывести сообщение для отладки
      * @param  {string} text - Сообщение
      * @param  {string} [style] - Оформление сообщения (CSS)
+     * @returns {this}
      */
     debug(text, style = 'background: black; color: red;') {
         if ($Config.Debug_Mode) {
-            if (!this.$JsMobileBasic.Mobile)
-                console.log('%c ' + text, style);
-            else
-                alert(style);
+            if (this.$JsMobileBasic.Mobile) alert(text); // eslint-disable-line
+            else console.log('%c ' + text, style);
         }
-        return {
-            next: this.debug
-        };
+        return this;
     },
 
     /** Закрыть программу
+     * @returns {this}
      */
     exit() {
         window.close();
@@ -989,11 +1079,11 @@ const JsMB = {
 
     addElement(name, type) {
         this.$Element[name] = document.createElement(type);
-        document.getElementById('includeHTML').appendChild(name)
+        document.getElementById('includeHTML').appendChild(name);
         return this.$Element[name];
     },
 
-    //Обработчики событий
+    // Обработчики событий
     _eventListeners() {
         // window.onClick =
         //     window.onMouseDown = window.onMouseMove = window.onMouseUp = window.onKeyDown = window.onKeyPress = window.onKeyUp = window.onRightClick = window.Loop = () => {};
@@ -1036,15 +1126,15 @@ const JsMB = {
                 onKeyUp(event.keyCode, event);
         }, false);
     }
-}
+};
 // ======Прочее======//
 
 JsMB.__preinit();
 if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     Object.assign(window, JsMB);
     JsMB.__init({
-        canvas: document.getElementById('c'),
-        div: document.getElementById('p')
+        'canvas': document.getElementById('c'),
+        'div': document.getElementById('p')
     });
 }
 
@@ -1052,18 +1142,18 @@ if (typeof module === 'object') module.exports = JsMB;
 
 JsMB.debug('// ======Инициализация завершена======//', 'background:black;color: #00ff00;');
 
-if (typeof window !== 'undefined') window.addEventListener('load', function () {
+if (typeof window !== 'undefined') window.addEventListener('load', () => {
     JsMB._eventListeners();
     if (typeof Main === "function") Main(); //eslint-disable-line
-    else throw new Error("В файле Autorun.bas должен быть хук Main()!");
-    if (typeof Loop === "function") {
+    else throw new Error('В файле Autorun.bas должен быть хук Main()!');
+    if (typeof Loop === 'function') {
         if (!window.requestAnimationFrame) {
             window.requestAnimationFrame = (window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame || window.oRequestAnimationFrame || function (fnc) {
                 return window.setTimeout(fnc, 1000 / 60);
             });
         }
 
-        function $Loop() {
+        function $Loop() { //eslint-disable-line
             window.requestAnimationFrame($Loop);
             Loop();
         }
