@@ -12,7 +12,7 @@ JsMobileBasic(JsMB) — это Новый кроссплатформенный �
 - Windows
 - Linux
 - Firefox OS
-- Max OS
+- Mac OS
 - JsOS
 - Браузер
 
