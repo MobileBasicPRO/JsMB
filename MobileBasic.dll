@@ -23,7 +23,6 @@ const JsMB = {
         'family': 'arial',
         'size': '10'
     },
-    '$Element': {},
     '$JsMobileBasic': {
         'name': 'JsMobileBasic',
         'version': 'Alpha 11',
@@ -1090,12 +1089,6 @@ const JsMB = {
     exit() {
         window.close();
         return this;
-    },
-
-    addElement(name, type) {
-        this.$Element[name] = document.createElement(type);
-        document.getElementById('includeHTML').appendChild(name);
-        return this.$Element[name];
     },
 
     // Обработчики событий
