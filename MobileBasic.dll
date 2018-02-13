@@ -36,7 +36,9 @@ const JsMB = {
         'supports': {
             'document': typeof document !== 'undefined',
             'window': typeof window !== 'undefined',
-            'ls': typeof localStorage !== 'undefined'
+            'browser': typeof document !== 'undefined' && typeof window !== 'undefined',
+            'ls': typeof localStorage !== 'undefined',
+            'module': typeof module !== 'undefined'
         }
     },
 
@@ -1143,7 +1145,7 @@ const JsMB = {
 // ======Прочее======//
 
 JsMB.__preinit();
-if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+if (JsMB.$JsMobileBasic.supports.browser && $Config.mount_window) {
     Object.assign(window, JsMB);
     JsMB.__init({
         'canvas': document.getElementById('c'),
