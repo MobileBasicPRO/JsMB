@@ -630,7 +630,8 @@ const JsMB = {
      * @returns {this}
      */
     input(text, def) {
-        return prompt(text, def); // eslint-disable-line
+        const tmp = prompt(text, def); // eslint-disable-line
+        return Number(tmp) || tmp;
     },
 
 
