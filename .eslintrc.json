@@ -299,13 +299,13 @@
         "sourceType": "script",
         "ecmaFeatures": {
             "modules": false,
-            "defaultParams": "error",
-            "classes": "error",
-            "arrowFunctions": "error",
-            "blockBindings": "error",
-            "forOf": "error",
-            "spread": "error",
-            "templateStrings": "error"
+            "defaultParams": true,
+            "classes": true,
+            "arrowFunctions": true,
+            "blockBindings": true,
+            "forOf": true,
+            "spread": true,
+            "templateStrings": true
         }
     }
 }
