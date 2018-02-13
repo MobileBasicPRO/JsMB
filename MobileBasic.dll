@@ -164,9 +164,15 @@ const JsMB = {
     fullScreen(mode) {
         if (this.$JsMobileBasic.supports.document) {
             if (mode) {
-                document.documentElement.requestFullScreen();
+                if (document.documentElement.requestFullscreen)
+                    document.documentElement.requestFullScreen();
+                else if (document.documentElement.webkitRequestFullScreen)
+                    document.documentElement.webkitRequestFullScreen();
             } else {
-                document.cancelFullScreen();
+                if (document.cancelFullScreen)
+                    document.cancelFullScreen();
+                else if (document.webkitCancelFullScreen)
+                    document.webkitCancelFullScreen();
             }
             return this;
         }
