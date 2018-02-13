@@ -708,7 +708,7 @@ const JsMB = {
      * @param  {number} max - До
      * @returns {number}
      */
-    'random': (min, max) => Math.floor((Math.random() * max) - min) + min,
+    'random': (min, max) => Math.floor(Math.random() * max) + min,
 
     /** Возвращает синус угла
      * @param  {number} angle - Угол в радианах
