@@ -907,6 +907,13 @@ const JsMB = {
      */
     'split': (str, char) => str.split(char),
 
+    /** Переводит массив в строку, разделяя элементы разделителем
+     * @param  {array} array - массив
+     * @param  {string} [separator=' '] - разделитель
+     * @returns {string}
+     */
+    'join': (array, separator = ' ') => array.join(separator),
+
     /** Возвращает строку с замененной частью
      * @param  {string} str - Строка
      * @param  {string} reg - Строка/регулярное выражение для замены
