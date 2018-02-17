@@ -351,7 +351,6 @@ const JsMB = {
         this.ctx.lineTo(x1, y1);
         this.ctx.closePath();
         this.ctx.stroke();
-        this.ctx.fill();
 
         return this;
     },
