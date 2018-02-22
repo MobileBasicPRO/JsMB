@@ -269,7 +269,7 @@ const JsMB = {
         return this;
     },
 
-    /** Рисует залитую окружность
+    /** РисуетР окружность
      * @param  {number} x - X центра
      * @param  {number} y - Y центра
      * @param  {number} radius - радиус
